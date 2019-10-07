@@ -8,8 +8,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.*;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -30,7 +33,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBar=new ProgressDialog(this);
+        progressBar = new ProgressDialog(this);
         progressBar.setMessage("Please wait..");
         progressBar.setCancelable(false);
 
@@ -48,9 +51,42 @@ public class MainActivity extends Activity {
                             public void onReceiveValue(String html) {
                                 Log.e("countttt", "1");
                                 count++;
+
+
+                                if (html.contains("unfan")){
+                                    webview.setOnTouchListener(new View.OnTouchListener() {
+                                        @Override
+                                        public boolean onTouch(View v, MotionEvent event) {
+                                            return true;
+                                        }
+                                    });
+                                    Toast.makeText(MainActivity.this, "liked", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    webview.setOnTouchListener(new View.OnTouchListener() {
+                                        @Override
+                                        public boolean onTouch(View v, MotionEvent event) {
+                                            return false;
+                                        }
+                                    });
+
+                                }
+
+
+
                                 try {
                                     if (!flag) {
                                         flag = true;
+
+
+                                        String cookies = CookieManager.getInstance().getCookie(url);
+
+                                        if (cookies.length() > 100) {
+                                            Log.e("loginstatus", "true");
+                                        } else {
+                                            Log.e("loginstatus", "false");
+                                        }
+
 
                                         //finding gfid
                                         gf_substring1 = html.substring(html.indexOf("origin=page_profile"), html.indexOf("origin=page_profile") + 100);
@@ -59,7 +95,7 @@ public class MainActivity extends Activity {
 //finding gfid
 
                                         //finding fan id
-                                       // gf_substring1 = html.substring(html.indexOf("origin=page_profile"), html.indexOf("origin=page_profile") + 100);
+                                        // gf_substring1 = html.substring(html.indexOf("origin=page_profile"), html.indexOf("origin=page_profile") + 100);
                                         fanid_substring1 = html.substring(html.indexOf("fan&amp;id="), html.indexOf("&amp;origin=page_profile"));
                                         fanid = fanid_substring1.substring(fanid_substring1.indexOf("=") + 1);
 
@@ -68,7 +104,7 @@ public class MainActivity extends Activity {
                                         Log.e("fanid", fanid);
 
 
-                                        webview.loadUrl("https://mbasic.facebook.com/a/profile.php?fan&id="+fanid+"&origin=page_profile&pageSuggestionsOnLiking=1&gfid=" + gfid + "&refid=17");
+                                        webview.loadUrl("https://mbasic.facebook.com/a/profile.php?fan&id=" + fanid + "&origin=page_profile&pageSuggestionsOnLiking=1&gfid=" + gfid + "&refid=17");
                                         onPageFinished(webview, url);
 
                                     } else {
@@ -84,13 +120,13 @@ public class MainActivity extends Activity {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    /*int maxLogSize = 1000;
-                                    for(int i = 0; i <= html.length() / maxLogSize; i++) {
+                                    int maxLogSize = 1000;
+                                    for (int i = 0; i <= html.length() / maxLogSize; i++) {
                                         int start = i * maxLogSize;
-                                        int end = (i+1) * maxLogSize;
+                                        int end = (i + 1) * maxLogSize;
                                         end = end > html.length() ? html.length() : end;
                                         Log.v("htmlllllll", html.substring(start, end));
-                                    }*/
+                                    }
                                     Log.e("likestatus", "false");
                                     progressBar.dismiss();
                                 }
