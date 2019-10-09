@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.*;
-import android.widget.ProgressBar;
+import android.widget.Button;
 import android.widget.Toast;
+
+import com.shaheen.webviewtest.model.FbPage;
 
 public class MainActivity extends Activity {
 
@@ -20,12 +22,13 @@ public class MainActivity extends Activity {
     String gf_substring2;
 
     String fanid_substring1;
-    String fanid_substring2;
     String gfid;
     String fanid;
     boolean flag = false;
     int count = 0;
     ProgressDialog progressBar;
+    Button BTN_close;
+    FbPage fbPage;
 
     @SuppressLint("JavascriptInterface")
     @Override
@@ -37,9 +40,21 @@ public class MainActivity extends Activity {
         progressBar.setMessage("Please wait..");
         progressBar.setCancelable(false);
 
+
+        getExtra();
+
+        BTN_close=findViewById(R.id.btn_close);
         final WebView webview = (WebView) findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
         webview.addJavascriptInterface(new MyJavaScriptInterface(this), "HtmlViewer");
+
+        BTN_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
         webview.setWebViewClient(new WebViewClient() {
             @Override
@@ -61,6 +76,8 @@ public class MainActivity extends Activity {
                                         }
                                     });
                                     Toast.makeText(MainActivity.this, "liked", Toast.LENGTH_SHORT).show();
+
+
                                 }
                                 else {
                                     webview.setOnTouchListener(new View.OnTouchListener() {
@@ -85,6 +102,7 @@ public class MainActivity extends Activity {
                                             Log.e("loginstatus", "true");
                                         } else {
                                             Log.e("loginstatus", "false");
+                                            Toast.makeText(MainActivity.this, "Login to continue", Toast.LENGTH_SHORT).show();
                                         }
 
 
@@ -92,7 +110,7 @@ public class MainActivity extends Activity {
                                         gf_substring1 = html.substring(html.indexOf("origin=page_profile"), html.indexOf("origin=page_profile") + 100);
                                         gf_substring2 = gf_substring1.substring(gf_substring1.indexOf("gfid="), gf_substring1.indexOf("&amp;ref"));
                                         gfid = gf_substring2.substring(gf_substring2.indexOf("=") + 1);
-//finding gfid
+
 
                                         //finding fan id
                                         // gf_substring1 = html.substring(html.indexOf("origin=page_profile"), html.indexOf("origin=page_profile") + 100);
@@ -120,13 +138,13 @@ public class MainActivity extends Activity {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    int maxLogSize = 1000;
+                                    /*int maxLogSize = 1000;
                                     for (int i = 0; i <= html.length() / maxLogSize; i++) {
                                         int start = i * maxLogSize;
                                         int end = (i + 1) * maxLogSize;
                                         end = end > html.length() ? html.length() : end;
                                         Log.v("htmlllllll", html.substring(start, end));
-                                    }
+                                    }*/
                                     Log.e("likestatus", "false");
                                     progressBar.dismiss();
                                 }
@@ -136,8 +154,14 @@ public class MainActivity extends Activity {
         });
 
 
-        webview.loadUrl("https://mbasic.facebook.com/btechtrls");
+        webview.loadUrl("https://mbasic.facebook.com/"+fbPage.getPageID());
         progressBar.show();
+
+    }
+
+    private void getExtra() {
+
+    fbPage = getIntent().getParcelableExtra("page");
 
     }
 
