@@ -11,18 +11,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainListActivity">
+        <activity android:name="com.shaheen.activity.HomeActivity">
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-            </intent-filter>
+
+        </activity>
+        <activity android:name=".TransactionsActivity">
+
+        </activity>
+        <activity android:name=".MainListFragment">
+        </activity>
+        <activity android:name=".FbPageFragment">
         </activity>
     </application>
 

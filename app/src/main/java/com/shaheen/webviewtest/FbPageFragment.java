@@ -7,16 +7,22 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.*;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.shaheen.activity.HomeActivity;
 import com.shaheen.webviewtest.model.FbPage;
 
-public class MainActivity extends Activity {
+public class FbPageFragment extends Fragment {
 
     String gf_substring1;
     String gf_substring2;
@@ -30,28 +36,53 @@ public class MainActivity extends Activity {
     Button BTN_close;
     FbPage fbPage;
 
-    @SuppressLint("JavascriptInterface")
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        progressBar = new ProgressDialog(this);
+    private void getExtra() {
+
+        fbPage = getArguments().getParcelable("page");
+
+    }
+
+    class MyJavaScriptInterface {
+
+        private Context ctx;
+
+        MyJavaScriptInterface(Context ctx) {
+            this.ctx = ctx;
+        }
+
+
+    }
+
+    public void showHTML(String html) {
+        new AlertDialog.Builder(getActivity()).setTitle("HTML").setMessage(html)
+                .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
+    }
+
+
+    @SuppressLint("JavascriptInterface")
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_main, container, false);
+
+
+        progressBar = new ProgressDialog(getActivity());
         progressBar.setMessage("Please wait..");
         progressBar.setCancelable(false);
 
 
         getExtra();
 
-        BTN_close=findViewById(R.id.btn_close);
-        final WebView webview = (WebView) findViewById(R.id.webview);
+        BTN_close = view.findViewById(R.id.btn_close);
+        final WebView webview = (WebView) view.findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
-        webview.addJavascriptInterface(new MyJavaScriptInterface(this), "HtmlViewer");
+        webview.addJavascriptInterface(new MyJavaScriptInterface(getActivity()), "HtmlViewer");
 
         BTN_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                getFragmentManager().popBackStack();
             }
         });
 
@@ -62,24 +93,27 @@ public class MainActivity extends Activity {
                 webview.evaluateJavascript(
                         "(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
                         new ValueCallback<String>() {
+                            @SuppressLint("ClickableViewAccessibility")
                             @Override
                             public void onReceiveValue(String html) {
                                 Log.e("countttt", "1");
                                 count++;
 
 
-                                if (html.contains("unfan")){
+                                if (html.contains("unfan")) {
                                     webview.setOnTouchListener(new View.OnTouchListener() {
                                         @Override
                                         public boolean onTouch(View v, MotionEvent event) {
                                             return true;
                                         }
                                     });
-                                    Toast.makeText(MainActivity.this, "liked", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "liked", Toast.LENGTH_SHORT).show();
 
+                                    HomeActivity.updatePoint(fbPage.getPoints());
 
-                                }
-                                else {
+                                    progressBar.dismiss();
+
+                                } else {
                                     webview.setOnTouchListener(new View.OnTouchListener() {
                                         @Override
                                         public boolean onTouch(View v, MotionEvent event) {
@@ -88,7 +122,6 @@ public class MainActivity extends Activity {
                                     });
 
                                 }
-
 
 
                                 try {
@@ -102,7 +135,7 @@ public class MainActivity extends Activity {
                                             Log.e("loginstatus", "true");
                                         } else {
                                             Log.e("loginstatus", "false");
-                                            Toast.makeText(MainActivity.this, "Login to continue", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "Login to continue", Toast.LENGTH_SHORT).show();
                                         }
 
 
@@ -130,12 +163,11 @@ public class MainActivity extends Activity {
                                         if (count == 3) {
                                             if (html.contains("unfan")) {
                                                 Log.e("likestatus", "true");
-                                                progressBar.dismiss();
                                             } else {
                                                 Log.e("likestatus", "false");
-                                                progressBar.dismiss();
                                             }
                                         }
+                                        progressBar.dismiss();
                                     }
                                 } catch (Exception e) {
                                     /*int maxLogSize = 1000;
@@ -154,30 +186,10 @@ public class MainActivity extends Activity {
         });
 
 
-        webview.loadUrl("https://mbasic.facebook.com/"+fbPage.getPageID());
+        webview.loadUrl("https://mbasic.facebook.com/" + fbPage.getPageID());
         progressBar.show();
 
-    }
 
-    private void getExtra() {
-
-    fbPage = getIntent().getParcelableExtra("page");
-
-    }
-
-    class MyJavaScriptInterface {
-
-        private Context ctx;
-
-        MyJavaScriptInterface(Context ctx) {
-            this.ctx = ctx;
-        }
-
-
-    }
-
-    public void showHTML(String html) {
-        new AlertDialog.Builder(MainActivity.this).setTitle("HTML").setMessage(html)
-                .setPositiveButton(android.R.string.ok, null).setCancelable(false).create().show();
+        return view;
     }
 }

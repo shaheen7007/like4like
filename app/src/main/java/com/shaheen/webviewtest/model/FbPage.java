@@ -8,6 +8,7 @@ public class FbPage implements Parcelable {
     String pageID;
     String userID;
     int points;
+    int UserTotalPoints;
 
     public FbPage() {
     }
@@ -16,6 +17,7 @@ public class FbPage implements Parcelable {
         pageID = in.readString();
         userID = in.readString();
         points = in.readInt();
+        UserTotalPoints = in.readInt();
     }
 
     public static final Creator<FbPage> CREATOR = new Creator<FbPage>() {
@@ -54,6 +56,14 @@ public class FbPage implements Parcelable {
         this.points = points;
     }
 
+    public int getUserTotalPoints() {
+        return UserTotalPoints;
+    }
+
+    public void setUserTotalPoints(int userTotalPoints) {
+        UserTotalPoints = userTotalPoints;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -64,5 +74,6 @@ public class FbPage implements Parcelable {
         dest.writeString(pageID);
         dest.writeString(userID);
         dest.writeInt(points);
+        dest.writeInt(UserTotalPoints);
     }
 }
