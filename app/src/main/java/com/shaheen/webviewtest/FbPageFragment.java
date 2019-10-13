@@ -19,7 +19,10 @@ import android.webkit.*;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.shaheen.activity.HomeActivity;
+import com.shaheen.webviewtest.databaseRef.UserLikedPagesRef;
 import com.shaheen.webviewtest.model.FbPage;
 
 public class FbPageFragment extends Fragment {
@@ -35,6 +38,8 @@ public class FbPageFragment extends Fragment {
     ProgressDialog progressBar;
     Button BTN_close;
     FbPage fbPage;
+    FirebaseUser user;
+    WebView webview;
 
 
     private void getExtra() {
@@ -72,12 +77,9 @@ public class FbPageFragment extends Fragment {
         progressBar.setCancelable(false);
 
 
+        init(view);
         getExtra();
 
-        BTN_close = view.findViewById(R.id.btn_close);
-        final WebView webview = (WebView) view.findViewById(R.id.webview);
-        webview.getSettings().setJavaScriptEnabled(true);
-        webview.addJavascriptInterface(new MyJavaScriptInterface(getActivity()), "HtmlViewer");
 
         BTN_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +110,8 @@ public class FbPageFragment extends Fragment {
                                         }
                                     });
                                     Toast.makeText(getActivity(), "liked", Toast.LENGTH_SHORT).show();
+
+                                    UserLikedPagesRef.getInstance(getActivity(),user.getUid()).child(fbPage.getPageID()).setValue(fbPage.getUserID());
 
                                     HomeActivity.updatePoint(fbPage.getPoints());
 
@@ -191,5 +195,15 @@ public class FbPageFragment extends Fragment {
 
 
         return view;
+    }
+
+    @SuppressLint("JavascriptInterface")
+    private void init(View view) {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        BTN_close = view.findViewById(R.id.btn_close);
+        webview = (WebView) view.findViewById(R.id.webview);
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.addJavascriptInterface(new MyJavaScriptInterface(getActivity()), "HtmlViewer");
+
     }
 }
