@@ -1,5 +1,7 @@
 package com.shaheen.webviewtest;
 
+import android.app.ProgressDialog;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -8,10 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.adapter.PagesGridAdapter;
+import com.shaheen.webviewtest.databaseRef.PagesRef;
+import com.shaheen.webviewtest.databaseRef.UserLikedPagesRef;
 import com.shaheen.webviewtest.model.FbPage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import co.ceryle.fitgridview.FitGridView;
@@ -23,7 +33,10 @@ public class MainListFragment extends Fragment {
     FitGridView gridView;
 
     FbPageFragment fbPageFragment;
+    ArrayList<String> userLikedPages;
     FragmentTransaction ft;
+    FirebaseUser user;
+    ProgressDialog progressBar;
 
 
     @Override
@@ -33,22 +46,36 @@ public class MainListFragment extends Fragment {
        View view = inflater.inflate(R.layout.activity_main_list, container, false);
 
         init(view);
-        getPagesList();
-        showPagesInGridView();
-
-
-
-
-
-
-
+        //getUserLikedPages();
 
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        getUserLikedPages();
+        super.onResume();
+    }
 
+    private void getUserLikedPages() {
+        progressBar.show();
+        userLikedPages=new ArrayList<>();
+        UserLikedPagesRef.getInstance(getActivity(),user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+                    userLikedPages.add(String.valueOf(snapshot.getKey()));
+                }
+                getPagesList();
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
 
@@ -81,8 +108,11 @@ return true;
     private void init(View view) {
 
         gridView = view.findViewById(R.id.gridView);
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-
+        progressBar = new ProgressDialog(getActivity());
+        progressBar.setMessage("Loading");
+        progressBar.setCancelable(false);
 
     }
 
@@ -108,16 +138,16 @@ return true;
                 bundle.putParcelable("page", fbPageList.get(position));
                 fbPageFragment.setArguments(bundle);
                 ft = getFragmentManager().beginTransaction();
-                ft.add(R.id.container, fbPageFragment, "fbpage");
+                ft.replace(R.id.container, fbPageFragment, "fbpage");
                 ft.setTransition(
                         FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.addToBackStack("mainlist");
                 ft.commit();
             }
 
         });
 
 
+        progressBar.dismiss();
 
     }
 
@@ -125,7 +155,37 @@ return true;
 
         fbPageList = new ArrayList<>();
 
-        //dummy data
+
+        PagesRef.getInstance(getActivity()).orderByChild(Consts.POINTS).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+                    FbPage fbPage = snapshot.getValue(FbPage.class);
+
+                    if (!userLikedPages.contains(fbPage.getPageID()) && !(fbPage.getUserTotalPoints()<fbPage.getPoints())){
+                        fbPageList.add(fbPage);
+                    }
+                }
+
+                Collections.reverse(fbPageList);
+                showPagesInGridView();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+        /*//dummy data
         FbPage fbPage = new FbPage();
         fbPage.setPageID("btechtrls");
         fbPage.setUserID("1");
@@ -161,7 +221,7 @@ return true;
         fbPage.setPageID("reyaursports");
         fbPage.setUserID("1");
         fbPage.setPoints(10);
-        fbPageList.add(fbPage);
+        fbPageList.add(fbPage);*/
 
 
     }
