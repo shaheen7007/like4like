@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +38,8 @@ public class MainListFragment extends Fragment {
     FragmentTransaction ft;
     FirebaseUser user;
     ProgressDialog progressBar;
+    Button BTN_listMyPage;
+    BottomSheet bottomSheet;
 
 
     @Override
@@ -108,11 +111,23 @@ return true;
     private void init(View view) {
 
         gridView = view.findViewById(R.id.gridView);
+        BTN_listMyPage=view.findViewById(R.id.btn_list_page);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         progressBar = new ProgressDialog(getActivity());
         progressBar.setMessage("Loading");
         progressBar.setCancelable(false);
+
+
+
+        BTN_listMyPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheet = BottomSheet.newInstance();
+                bottomSheet.show(getActivity().getSupportFragmentManager(),
+                        "list page");
+            }
+        });
 
     }
 

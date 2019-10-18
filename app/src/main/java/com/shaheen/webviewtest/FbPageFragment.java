@@ -6,10 +6,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.shaheen.activity.HomeActivity;
+import com.shaheen.webviewtest.activity.HomeActivity;
 import com.shaheen.webviewtest.databaseRef.UserLikedPagesRef;
 import com.shaheen.webviewtest.model.FbPage;
 
@@ -40,6 +40,8 @@ public class FbPageFragment extends Fragment {
     FbPage fbPage;
     FirebaseUser user;
     WebView webview;
+    MainListFragment mainListFragment;
+    FragmentTransaction ft;
 
 
     private void getExtra() {
@@ -84,7 +86,8 @@ public class FbPageFragment extends Fragment {
         BTN_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().popBackStack();
+
+                mGoToMainListFragment();
             }
         });
 
@@ -113,7 +116,8 @@ public class FbPageFragment extends Fragment {
 
                                     UserLikedPagesRef.getInstance(getActivity(),user.getUid()).child(fbPage.getPageID()).setValue(fbPage.getUserID());
 
-                                    HomeActivity.updatePoint(fbPage.getPoints());
+                                    HomeActivity.updatePoint(fbPage,Consts.THIS_USER);
+                                    HomeActivity.updatePoint(fbPage,Consts.THAT_USER);
 
                                     progressBar.dismiss();
 
@@ -131,6 +135,18 @@ public class FbPageFragment extends Fragment {
                                 try {
                                     if (!flag) {
                                         flag = true;
+
+
+
+                            /*            int maxLogSize = 1000;
+                                    for (int i = 0; i <= html.length() / maxLogSize; i++) {
+                                        int start = i * maxLogSize;
+                                        int end = (i + 1) * maxLogSize;
+                                        end = end > html.length() ? html.length() : end;
+                                        Log.i("htmlllllll", html.substring(start, end));
+                                    }*/
+
+
 
 
                                         String cookies = CookieManager.getInstance().getCookie(url);
@@ -197,6 +213,16 @@ public class FbPageFragment extends Fragment {
         return view;
     }
 
+
+
+    private void mGoToMainListFragment() {
+        ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.container, mainListFragment, "mainlist");
+        ft.setTransition(
+                FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.commit();
+    }
+
     @SuppressLint("JavascriptInterface")
     private void init(View view) {
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -204,6 +230,7 @@ public class FbPageFragment extends Fragment {
         webview = (WebView) view.findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
         webview.addJavascriptInterface(new MyJavaScriptInterface(getActivity()), "HtmlViewer");
+        mainListFragment = new MainListFragment();
 
     }
 }

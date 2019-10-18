@@ -6,13 +6,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.shaheen.webviewtest.Consts;
 
 
-public class UsersRef {
+public class PagesRef {
     public static DatabaseReference getInstance(Context context) {
-        return MainRef.getInstance(context).child(Consts.USERS).getRef();
+        return MainRef.getInstance(context).child(Consts.PAGES);
     }
 
-    public static DatabaseReference getUserByUserId(Context context,String user_id){
-        return UsersRef.getInstance(context).child(user_id).getRef();
+    public static DatabaseReference getPageByPageId(Context context,String page_id){
+           return PagesRef.getInstance(context).child(page_id).getRef();
     }
 }
 

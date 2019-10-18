@@ -1,4 +1,4 @@
-package com.shaheen.activity;
+package com.shaheen.webviewtest.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
