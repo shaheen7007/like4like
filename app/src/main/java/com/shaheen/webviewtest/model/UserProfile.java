@@ -8,6 +8,16 @@ public class UserProfile {
     private String fbPage;
     private int pointsPerLike;
 
+    public String getListedPage() {
+        return listedPage;
+    }
+
+    public void setListedPage(String listedPage) {
+        this.listedPage = listedPage;
+    }
+
+    private String listedPage;
+
     public UserProfile() {
     }
 

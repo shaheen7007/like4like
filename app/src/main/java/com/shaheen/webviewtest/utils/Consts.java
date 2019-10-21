@@ -1,4 +1,4 @@
-package com.shaheen.webviewtest;
+package com.shaheen.webviewtest.utils;
 
 public interface Consts {
     String MainRef="fblike4like";
@@ -10,4 +10,9 @@ public interface Consts {
     String PAGES = "pages";
     String F_USER_TOTAL_POINTS = "UserTotalPoints";
     String POINTS = "points";
+    int ADD =1 ;
+    String F_LISTED_PAGE = "listedPage";
+    String TRANSACTIONS = "transactions";
+    int TRANSACTION_I_LIKE = 1;
+    int TRANSACTION_U_LIKE = 2;
 }

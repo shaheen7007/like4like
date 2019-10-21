@@ -17,7 +17,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.R;
+import com.shaheen.webviewtest.databaseRef.UsersRef;
+import com.shaheen.webviewtest.model.FbPage;
+import com.shaheen.webviewtest.model.UserProfile;
+import com.shaheen.webviewtest.utils.PrefManager;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -30,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     Button _loginButton;
     TextView _signupLink;
     private FirebaseAuth mAuth;
+    private PrefManager prefManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void init() {
+        prefManager = PrefManager.getInstance(this);
         _emailText = findViewById(R.id.input_email);
         _passwordText = findViewById(R.id.input_password);
         _loginButton = findViewById(R.id.btn_login);
@@ -66,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if (currentUser!=null){
+        if (currentUser != null) {
             mMoveToHomePage();
         }
     }
@@ -105,19 +114,58 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            mMoveToHomePage();
+                            mCheckIfUserAlreadyListedPage(user.getUid());
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
-                          //  updateUI(null);
+                            //  updateUI(null);
                         }
 
                         // ...
                     }
                 });
+    }
+
+    private void mCheckIfUserAlreadyListedPage(final String uid) {
+
+
+        UsersRef.getUserByUserId(LoginActivity.this, uid).getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+
+                    UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+
+                    if (userProfile.getListedPage() != null) {
+                        prefManager.setListedPageId(userProfile.getListedPage());
+                        prefManager.setIsPageListed(true);
+                        mMoveToHomePage();
+                    } else {
+                        prefManager.setIsPageListed(false);
+                        mMoveToHomePage();
+                    }
+
+                } else {
+                    prefManager.setIsPageListed(false);
+                    mMoveToHomePage();
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                mMoveToHomePage();
+            }
+        });
+
+
     }
 
 
@@ -138,7 +186,6 @@ public class LoginActivity extends AppCompatActivity {
         // disable going back to the MainActivity
         moveTaskToBack(true);
     }
-
 
 
     public void onLoginFailed() {

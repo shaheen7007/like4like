@@ -6,9 +6,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.shaheen.webviewtest.utils.Consts;
 
 
-public class UserLikedPagesRef {
+public class TransactionsRef {
     public static DatabaseReference getInstance(Context context, String uid) {
-        UsersRef.getInstance(context).child(uid).child(Consts.USER_LIKED_PAGES).keepSynced(true);
-        return UsersRef.getInstance(context).child(uid).child(Consts.USER_LIKED_PAGES).getRef();
+        return UsersRef.getInstance(context).child(uid).child(Consts.TRANSACTIONS).getRef();
     }
 }

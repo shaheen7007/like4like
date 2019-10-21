@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.shaheen.webviewtest.Consts;
+import com.shaheen.webviewtest.utils.Consts;
 
 public class MainRef {
     private static DatabaseReference mDatabase;

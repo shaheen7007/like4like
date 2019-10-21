@@ -27,7 +27,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.shaheen.webviewtest.Consts;
+import com.shaheen.webviewtest.databaseRef.TransactionsRef;
+import com.shaheen.webviewtest.utils.Consts;
 import com.shaheen.webviewtest.FbPageFragment;
 import com.shaheen.webviewtest.MainListFragment;
 import com.shaheen.webviewtest.R;
@@ -195,6 +196,7 @@ public class HomeActivity extends AppCompatActivity {
                         int newPoints = currentPoints + fbPage.getPoints();
 
                         mUpdatePointsInFirebase(userID, newPoints, fbPage.getPageID(), Consts.THIS_USER);  // the user logged in this device
+                        mAddTransaction(userID,"You liked a page : +"+fbPage.getPoints()+" Pts");
 
 
                     } else {
@@ -223,7 +225,9 @@ public class HomeActivity extends AppCompatActivity {
                             newPoints=0;
                         }
 
-                        mUpdatePointsInFirebase(fbPage.getUserID(), newPoints, fbPage.getPageID(), Consts.THAT_USER);  // the user logged in this device
+                        mUpdatePointsInFirebase(fbPage.getUserID(), newPoints, fbPage.getPageID(), Consts.THAT_USER);
+
+                        mAddTransaction(userID,"A user liked your page : -"+fbPage.getPoints()+" Pts");
 
 
                     } else {
@@ -237,6 +241,12 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private static void mAddTransaction(String userID, String msg) {
+
+        TransactionsRef.getInstance(context,userID).push().setValue(msg);
+
     }
 
 

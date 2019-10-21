@@ -1,8 +1,10 @@
 package com.shaheen.webviewtest;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +22,8 @@ import com.shaheen.webviewtest.adapter.PagesGridAdapter;
 import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.UserLikedPagesRef;
 import com.shaheen.webviewtest.model.FbPage;
+import com.shaheen.webviewtest.utils.Consts;
+import com.shaheen.webviewtest.utils.PrefManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,23 +34,26 @@ import co.ceryle.fitgridview.FitGridView;
 
 public class MainListFragment extends Fragment {
 
-    List<FbPage> fbPageList;
-    FitGridView gridView;
+    static List<FbPage> fbPageList;
+    static FitGridView gridView;
+    static PrefManager prefManager;
 
-    FbPageFragment fbPageFragment;
-    ArrayList<String> userLikedPages;
-    FragmentTransaction ft;
-    FirebaseUser user;
-    ProgressDialog progressBar;
-    Button BTN_listMyPage;
+    static FbPageFragment fbPageFragment;
+    static ArrayList<String> userLikedPages;
+    static FragmentTransaction ft;
+    static FirebaseUser user;
+    static ProgressDialog progressBar;
+    static Button BTN_listMyPage;
     BottomSheet bottomSheet;
+    static Context context;
+    static FragmentManager fragmentManager;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.activity_main_list, container, false);
+        View view = inflater.inflate(R.layout.activity_main_list, container, false);
 
         init(view);
         //getUserLikedPages();
@@ -61,13 +68,13 @@ public class MainListFragment extends Fragment {
         super.onResume();
     }
 
-    private void getUserLikedPages() {
+    static void getUserLikedPages() {
         progressBar.show();
-        userLikedPages=new ArrayList<>();
-        UserLikedPagesRef.getInstance(getActivity(),user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        userLikedPages = new ArrayList<>();
+        UserLikedPagesRef.getInstance(context, user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     userLikedPages.add(String.valueOf(snapshot.getKey()));
                 }
                 getPagesList();
@@ -110,14 +117,16 @@ return true;
 
     private void init(View view) {
 
+        context = getActivity();
+        prefManager = PrefManager.getInstance(context);
+        fragmentManager = getFragmentManager();
         gridView = view.findViewById(R.id.gridView);
-        BTN_listMyPage=view.findViewById(R.id.btn_list_page);
+        BTN_listMyPage = view.findViewById(R.id.btn_list_page);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         progressBar = new ProgressDialog(getActivity());
         progressBar.setMessage("Loading");
         progressBar.setCancelable(false);
-
 
 
         BTN_listMyPage.setOnClickListener(new View.OnClickListener() {
@@ -132,12 +141,11 @@ return true;
     }
 
 
-
-    private void showPagesInGridView() {
+    private static void showPagesInGridView() {
 
         fbPageFragment = new FbPageFragment();
 
-        PagesGridAdapter pagesAdapter = new PagesGridAdapter(getActivity(), fbPageList);
+        PagesGridAdapter pagesAdapter = new PagesGridAdapter(context, fbPageList);
         gridView.setAdapter(pagesAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -149,10 +157,10 @@ return true;
 
                 Toast.makeText(getActivity(), fbPageList.get(position).getPageID(), Toast.LENGTH_SHORT).show();
 */
-                Bundle bundle=new Bundle();
+                Bundle bundle = new Bundle();
                 bundle.putParcelable("page", fbPageList.get(position));
                 fbPageFragment.setArguments(bundle);
-                ft = getFragmentManager().beginTransaction();
+                ft = fragmentManager.beginTransaction();
                 ft.replace(R.id.container, fbPageFragment, "fbpage");
                 ft.setTransition(
                         FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -166,18 +174,26 @@ return true;
 
     }
 
-    private void getPagesList() {
+    private static void getPagesList() {
+
+
+        if (prefManager.isPageListed()) {
+            BTN_listMyPage.setVisibility(View.GONE);
+        } else {
+            BTN_listMyPage.setVisibility(View.VISIBLE);
+        }
+
 
         fbPageList = new ArrayList<>();
 
 
-        PagesRef.getInstance(getActivity()).orderByChild(Consts.POINTS).addListenerForSingleValueEvent(new ValueEventListener() {
+        PagesRef.getInstance(context).orderByChild(Consts.POINTS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     FbPage fbPage = snapshot.getValue(FbPage.class);
 
-                    if (!userLikedPages.contains(fbPage.getPageID()) && !(fbPage.getUserTotalPoints()<fbPage.getPoints())){
+                    if (!userLikedPages.contains(fbPage.getPageID()) && !(fbPage.getUserTotalPoints() < fbPage.getPoints())) {
                         fbPageList.add(fbPage);
                     }
                 }

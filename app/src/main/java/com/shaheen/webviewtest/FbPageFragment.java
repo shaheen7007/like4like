@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.shaheen.webviewtest.activity.HomeActivity;
 import com.shaheen.webviewtest.databaseRef.UserLikedPagesRef;
 import com.shaheen.webviewtest.model.FbPage;
+import com.shaheen.webviewtest.utils.Consts;
 
 public class FbPageFragment extends Fragment {
 
@@ -104,6 +105,7 @@ public class FbPageFragment extends Fragment {
                                 Log.e("countttt", "1");
                                 count++;
 
+                                BTN_close.setVisibility(View.VISIBLE);
 
                                 if (html.contains("unfan")) {
                                     webview.setOnTouchListener(new View.OnTouchListener() {
@@ -116,7 +118,7 @@ public class FbPageFragment extends Fragment {
 
                                     UserLikedPagesRef.getInstance(getActivity(),user.getUid()).child(fbPage.getPageID()).setValue(fbPage.getUserID());
 
-                                    HomeActivity.updatePoint(fbPage,Consts.THIS_USER);
+                                    HomeActivity.updatePoint(fbPage, Consts.THIS_USER);
                                     HomeActivity.updatePoint(fbPage,Consts.THAT_USER);
 
                                     progressBar.dismiss();
@@ -135,6 +137,7 @@ public class FbPageFragment extends Fragment {
                                 try {
                                     if (!flag) {
                                         flag = true;
+                                        BTN_close.setVisibility(View.GONE);
 
 
 
@@ -155,6 +158,7 @@ public class FbPageFragment extends Fragment {
                                             Log.e("loginstatus", "true");
                                         } else {
                                             Log.e("loginstatus", "false");
+                                            BTN_close.setVisibility(View.VISIBLE);
                                             Toast.makeText(getActivity(), "Login to continue", Toast.LENGTH_SHORT).show();
                                         }
 
@@ -231,6 +235,8 @@ public class FbPageFragment extends Fragment {
         webview.getSettings().setJavaScriptEnabled(true);
         webview.addJavascriptInterface(new MyJavaScriptInterface(getActivity()), "HtmlViewer");
         mainListFragment = new MainListFragment();
+
+        BTN_close.setVisibility(View.GONE);
 
     }
 }

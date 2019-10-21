@@ -9,18 +9,35 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.shaheen.webviewtest.databaseRef.PagesRef;
+import com.shaheen.webviewtest.databaseRef.UserLikedPagesRef;
+import com.shaheen.webviewtest.databaseRef.UsersRef;
+import com.shaheen.webviewtest.model.FbPage;
+import com.shaheen.webviewtest.model.UserProfile;
+import com.shaheen.webviewtest.utils.Consts;
+import com.shaheen.webviewtest.utils.PrefManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,9 +52,13 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
     ArrayList<String> returnValue = new ArrayList<>();
     EditText ET_FbID, ET_points;
     View view;
+    PrefManager prefManager;
     private ProgressDialog dialog = null;
     private boolean isVerified = false;
-    private int selected_point= 0;
+    private boolean isPointSet= false;
+    private int selected_point = 0;
+    FirebaseUser user;
+    final CharSequence items[] = new CharSequence[]{"10 Pts", "15 Pts", "20 Pts", "25 Pts"};
 
     public static BottomSheet newInstance() {
         return new BottomSheet();
@@ -55,12 +76,15 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
         ET_FbID = view.findViewById(R.id.fb_id);
         ET_points = view.findViewById(R.id.spnr_points);
         returnValue = new ArrayList<>();
+        prefManager = PrefManager.getInstance(getActivity());
 
         BTNsubmit.setOnClickListener(this);
         TXT_verify.setOnClickListener(this);
         ET_points.setOnClickListener(this);
 
         dialog = new ProgressDialog(getActivity());
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         return view;
     }
@@ -83,7 +107,7 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
         }*/
     }
 
-    @SuppressLint("JavascriptInterface")
+    @SuppressLint({"JavascriptInterface", "ClickableViewAccessibility"})
     @Override
     public void onClick(View v) {
 
@@ -92,12 +116,13 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
         if (v == ET_points) {
 
             final AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-            final CharSequence items[] = new CharSequence[]{"10 Pts", "15 Pts", "20 Pts", "25 Pts"};
+
             adb.setSingleChoiceItems(items, selected_point, new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface d, int n) {
-                    selected_point=n;
+                    isPointSet=true;
+                    selected_point = n;
                     ET_points.setText(items[n]);
                     d.cancel();
 
@@ -116,8 +141,13 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
 
             if (isVerified) {
 
-                Toast.makeText(getActivity(), "submit", Toast.LENGTH_SHORT).show();
+                if (isPointSet) {
 
+                    mAddPageToFirebase();
+                }
+                else {
+                    Toast.makeText(getActivity(), "Please select Points per like", Toast.LENGTH_SHORT).show();
+                }
 
             } else {
                 Toast.makeText(getActivity(), "Please verify to continue", Toast.LENGTH_SHORT).show();
@@ -138,15 +168,6 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
                 final WebView webview = new WebView(getActivity());
                 webview.getSettings().setJavaScriptEnabled(true);
                 webview.addJavascriptInterface(new MyJavaScriptInterface(getActivity()), "HtmlViewer");
-                webview.setWebViewClient(new WebViewClient() {
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        view.loadUrl(url);
-
-                        return true;
-                    }
-                });
-
                 alert.setView(webview);
                 alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
@@ -164,23 +185,105 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
                 });
 
 
+                webview.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return true;
+                    }
+                });
+
+
                 webview.setWebViewClient(new WebViewClient() {
                     @Override
                     public void onPageFinished(WebView view, final String url) {
+                        webview.evaluateJavascript(
+                                "(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
+                                new ValueCallback<String>() {
+                                    @SuppressLint("ClickableViewAccessibility")
+                                    @Override
+                                    public void onReceiveValue(String html) {
 
-                        hideProgressDialog();
-                        alert.show();
+                                        if (html.contains("Page Not Found") || html.contains("Content not found")) {
+                                            hideProgressDialog();
+                                            Toast.makeText(getActivity(), "Page Not Found", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            hideProgressDialog();
+                                            alert.show();
+                                        }
+
+                                    }
+                                });
                     }
                 });
+
                 webview.loadUrl("https://mbasic.facebook.com/" + ET_FbID.getText().toString().trim());
                 showProgressDialog();
             }
         }
     }
 
+    private void mAddPageToFirebase() {
 
 
+        showProgressDialog();
 
+        final FbPage fbPage = new FbPage();
+        fbPage.setPageID(ET_FbID.getText().toString().trim());
+        fbPage.setUserID(user.getUid());
+        switch (selected_point) {
+            case 0:
+                fbPage.setPoints(10);
+                break;
+            case 1:
+                fbPage.setPoints(15);
+                break;
+            case 2:
+                fbPage.setPoints(20);
+                break;
+            case 3:
+                fbPage.setPoints(25);
+                break;
+        }
+
+        UsersRef.getUserByUserId(getActivity(), user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+
+                        UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                        int currentPoints = userProfile.getTotalPoints();
+                        fbPage.setUserTotalPoints(currentPoints);
+                        PagesRef.getInstance(getActivity()).child(fbPage.getPageID()).setValue(fbPage);
+                        hideProgressDialog();
+                        Toast.makeText(getActivity(), "Your page added successfully. Now earn more points to get more Likes!", Toast.LENGTH_LONG).show();
+                        dismiss();
+                        UserLikedPagesRef.getInstance(getActivity(),user.getUid()).child(fbPage.getPageID()).setValue(fbPage.getUserID()); //adding to users liked page so that user's page won't be visible to himself
+
+                        //update userref- listedpageid
+                        UsersRef.getUserByUserId(getActivity(),user.getUid()).child(Consts.F_LISTED_PAGE).setValue(fbPage.getPageID());
+                        prefManager.setIsPageListed(true);
+                        prefManager.setListedPageId(fbPage.getPageID());
+
+
+                        MainListFragment.getUserLikedPages();
+
+
+                    } else {
+                        Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                        hideProgressDialog();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                    PagesRef.getInstance(getActivity()).child(fbPage.getPageID()).setValue(fbPage);
+
+                }
+            });
+
+        }
 
 
        /* if (v == profile_image) {
