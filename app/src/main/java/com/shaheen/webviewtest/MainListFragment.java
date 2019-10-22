@@ -44,7 +44,7 @@ public class MainListFragment extends Fragment {
     static FirebaseUser user;
     static ProgressDialog progressBar;
     static Button BTN_listMyPage;
-    BottomSheet bottomSheet;
+    BottomSheetAdd bottomSheet;
     static Context context;
     static FragmentManager fragmentManager;
 
@@ -132,7 +132,7 @@ return true;
         BTN_listMyPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheet = BottomSheet.newInstance();
+                bottomSheet = BottomSheetAdd.newInstance();
                 bottomSheet.show(getActivity().getSupportFragmentManager(),
                         "list page");
             }

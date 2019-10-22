@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,7 +44,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 
-public class BottomSheet extends BottomSheetDialogFragment implements View.OnClickListener {
+public class BottomSheetAdd extends BottomSheetDialogFragment implements View.OnClickListener {
 
     Button BTNsubmit;
     TextView TXT_verify;
@@ -60,8 +59,8 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
     FirebaseUser user;
     final CharSequence items[] = new CharSequence[]{"10 Pts", "15 Pts", "20 Pts", "25 Pts"};
 
-    public static BottomSheet newInstance() {
-        return new BottomSheet();
+    public static BottomSheetAdd newInstance() {
+        return new BottomSheetAdd();
     }
 
     @Nullable
@@ -263,6 +262,7 @@ public class BottomSheet extends BottomSheetDialogFragment implements View.OnCli
                         UsersRef.getUserByUserId(getActivity(),user.getUid()).child(Consts.F_LISTED_PAGE).setValue(fbPage.getPageID());
                         prefManager.setIsPageListed(true);
                         prefManager.setListedPageId(fbPage.getPageID());
+                        prefManager.setPointPerLike(fbPage.getPoints());
 
 
                         MainListFragment.getUserLikedPages();

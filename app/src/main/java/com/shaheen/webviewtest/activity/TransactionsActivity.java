@@ -5,8 +5,10 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,16 +24,18 @@ import com.shaheen.webviewtest.model.Transaction;
 import com.shaheen.webviewtest.utils.Consts;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TransactionsActivity extends AppCompatActivity {
 
-    ListView RV_transactions;
-    List<String> list;
+    RecyclerView RV_transactions;
+    List<Transaction> list;
     Runnable r;
     FirebaseUser user;
     TransactionsAdapter transactionsAdapter;
     ProgressDialog dialog;
+    ImageView BTN_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +45,23 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     private void init() {
-        RV_transactions = (ListView) findViewById(R.id.list_transactions);
+        RV_transactions = (RecyclerView) findViewById(R.id.list_transactions);
+        BTN_back = findViewById(R.id.nav_btn);
+
+        BTN_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TransactionsActivity.super.onBackPressed();
+            }
+        });
+
+
         dialog = new ProgressDialog(this);
 
         list = new ArrayList<>();
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        RV_transactions.setLayoutManager(mLayoutManager);
+        RV_transactions.setLayoutManager(mLayoutManager);
         transactionsAdapter = new TransactionsAdapter(getApplicationContext(), list);
         RV_transactions.setAdapter(transactionsAdapter);
 
@@ -53,7 +70,7 @@ public class TransactionsActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-       mGetUserTransactions(user.getUid());
+        mGetUserTransactions(user.getUid());
 
 
 
@@ -85,24 +102,29 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     private void mGetUserTransactions(String uid) {
-        list.clear();
+
         showProgressDialog();
-        TransactionsRef.getInstance(TransactionsActivity.this,uid).addValueEventListener(new ValueEventListener() {
+        TransactionsRef.getInstance(TransactionsActivity.this, uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+                list.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                    list.add(snapshot.getValue().toString());
+                    Transaction transaction = snapshot.getValue(Transaction.class);
+
+                    list.add(transaction);
                 }
-                int index = RV_transactions.getFirstVisiblePosition(); //This changed
+              /*  int index = RV_transactions.getFirstVisiblePosition(); //This changed
                 View v = RV_transactions.getChildAt(list.size());
                 int top = (v == null) ? list.size() : v.getBottom(); //this changed
+*/
+                Collections.reverse(list);
 
                 transactionsAdapter.notifyDataSetChanged();
                 hideProgressDialog();
 
 // restore the position of listview
-                RV_transactions.setSelectionFromTop(index, top);
+                //   RV_transactions.setSelectionFromTop(index, top);
 
             }
 
@@ -113,10 +135,6 @@ public class TransactionsActivity extends AppCompatActivity {
         });
 
     }
-
-
-
-
 
 
     void showProgressDialog() {
@@ -132,7 +150,6 @@ public class TransactionsActivity extends AppCompatActivity {
             dialog.dismiss();
         }
     }
-
 
 
 }

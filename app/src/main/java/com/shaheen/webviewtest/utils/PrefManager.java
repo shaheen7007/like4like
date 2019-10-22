@@ -14,6 +14,7 @@ public class PrefManager {
     private static final String TAG_NAME = "chronology.prefs";
     private static final String LISTED_PAGE_ID = "listed_page_id";
     private static final String IS_PAGE_LISTED = "is_page_listed";
+    private static final String POINT_PER_LIKE = "points_per_like";
 
 
     // ===========================================================
@@ -91,6 +92,7 @@ public class PrefManager {
     public boolean isPageListed(){
         return prefs.getBoolean(IS_PAGE_LISTED, false);
     }
+
     public void setIsPageListed(boolean status){
         putBoolean(IS_PAGE_LISTED,status);
     }
@@ -98,8 +100,16 @@ public class PrefManager {
     public String getLitedPageId(){
         return prefs.getString(LISTED_PAGE_ID, null);
     }
+
     public void setListedPageId(String id){
         putString(LISTED_PAGE_ID,id);
+    }
+    public int getPointPerLike(){
+        return prefs.getInt(POINT_PER_LIKE, 10);
+    }
+
+    public void setPointPerLike(int point){
+        putInt(POINT_PER_LIKE,point);
     }
 
    }

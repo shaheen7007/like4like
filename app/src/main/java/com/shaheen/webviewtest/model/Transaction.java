@@ -6,7 +6,33 @@ public class Transaction {
     int points;
     int type;
     String msg;
+    String date;
+    int balance;
+    int plusOrMinus;
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public int getPlusOrMinus() {
+        return plusOrMinus;
+    }
+
+    public void setPlusOrMinus(int plusOrMinus) {
+        this.plusOrMinus = plusOrMinus;
+    }
 
     public int getPoints() {
         return points;

@@ -3,11 +3,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context=".activity.TransactionsActivity">
 
-    <ListView
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
+        android:id="@+id/tb"
+        android:background="@color/colorPrimary"
+        android:layout_height="56dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:id="@+id/tv_pts"
+                android:padding="5dp"
+                android:visibility="gone"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:textColor="#fff"
+                android:textSize="16sp"/>
+
+
+            <ImageView
+                android:id="@+id/nav_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:src="@drawable/ic_arrow_back_black_24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Transactions"
+                android:layout_marginStart="20dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_toEndOf="@+id/nav_btn"
+                android:textColor="#fff"
+                android:textSize="16sp"
+                />
+
+        </RelativeLayout>
+
+
+
+    </android.support.v7.widget.Toolbar>
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_marginTop="4dp"
         android:id="@+id/list_transactions"
         android:layout_height="match_parent"/>
 

@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.R;
+import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.FbPage;
 import com.shaheen.webviewtest.model.UserProfile;
@@ -144,7 +145,10 @@ public class LoginActivity extends AppCompatActivity {
                     if (userProfile.getListedPage() != null) {
                         prefManager.setListedPageId(userProfile.getListedPage());
                         prefManager.setIsPageListed(true);
-                        mMoveToHomePage();
+
+                        mGetPageDetails(userProfile.getListedPage());
+
+
                     } else {
                         prefManager.setIsPageListed(false);
                         mMoveToHomePage();
@@ -164,6 +168,31 @@ public class LoginActivity extends AppCompatActivity {
                 mMoveToHomePage();
             }
         });
+
+
+    }
+
+    private void mGetPageDetails(String listedPage) {
+
+        PagesRef.getPageByPageId(LoginActivity.this,listedPage).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                FbPage fbPage = dataSnapshot.getValue(FbPage.class);
+
+                prefManager.setPointPerLike(fbPage.getPoints());
+                mMoveToHomePage();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
 
     }

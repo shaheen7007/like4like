@@ -3,67 +3,75 @@ package com.shaheen.webviewtest.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.shaheen.webviewtest.R;
-import com.shaheen.webviewtest.model.FbPage;
+import com.shaheen.webviewtest.model.Transaction;
+import com.shaheen.webviewtest.utils.Consts;
 
 import java.util.List;
 
-public class TransactionsAdapter extends BaseAdapter {
-        Context context;
-        List<String>fbPageList;
-        LayoutInflater inflter;
+public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapter.MyViewHolder> {
+    Context context;
+    List<Transaction> transactionList;
+    LayoutInflater inflter;
 
-        public TransactionsAdapter(Context applicationContext, List<String>fbPageList) {
-            this.context = applicationContext;
-            this.fbPageList = fbPageList;
-            inflter = (LayoutInflater.from(applicationContext));
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView TV_date,TV_msg,TV_pts,TV_balance;
+        ImageView IMG_pts;
+
+        public MyViewHolder(View view) {
+            super(view);
+            TV_date = (TextView) view.findViewById(R.id.date);
+            TV_msg = (TextView) view.findViewById(R.id.msg);
+            TV_pts = (TextView) view.findViewById(R.id.tv_pts);
+            TV_balance = (TextView) view.findViewById(R.id.balance);
+            IMG_pts=view.findViewById(R.id.img_pts);
         }
+    }
 
-        @Override
-        public int getCount() {
-            return fbPageList.size();
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_transactions, parent, false);
+
+        return new MyViewHolder(itemView);
+    }
+
+
+    @Override
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+
+        if (transactionList.get(position).getPlusOrMinus()== Consts.PLUS) {
+            holder.IMG_pts.setBackgroundResource(R.drawable.ic_arrow_upward_black_24dp);
+        } else if (transactionList.get(position).getPlusOrMinus()== Consts.MINUS){
+            holder.IMG_pts.setBackgroundResource(R.drawable.ic_arrow_downward_black_24dp);
         }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            view = inflter.inflate(R.layout.item_transactions, null); // inflate the layout
-            TextView TV_transaction = (TextView) view.findViewById(R.id.tv); // get the reference of ImageView
-          //  TextView TV_points =(TextView) view.findViewById(R.id.tv_points);
-
-            TV_transaction.setText(fbPageList.get(i));
-
-            if (fbPageList.get(i).contains("+")){
-                TV_transaction.setTextColor(Color.parseColor("#ff3700"));
-            }
-            else {
-                TV_transaction.setTextColor(Color.parseColor("#ff3700"));
-            }
-
-
-          //TV_points.setText(fbPageList.get(i).getPoints() +" Pts");
-            return view;
-        }
-
-
-
-
+        holder.TV_balance.setText("Balance: "+transactionList.get(position).getBalance()+" Pts");
+        holder.TV_pts.setText(transactionList.get(position).getPoints()+" Pts");
+        holder.TV_date.setText(transactionList.get(position).getDate());
+        holder.TV_msg.setText(transactionList.get(position).getMsg());
 
 
     }
+
+
+    @Override
+    public int getItemCount() {
+        return transactionList.size();
+    }
+
+
+    public TransactionsAdapter(Context applicationContext, List<Transaction> fbPageList) {
+        this.context = applicationContext;
+        this.transactionList = fbPageList;
+    }
+}
 

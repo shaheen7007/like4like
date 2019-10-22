@@ -28,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.databaseRef.TransactionsRef;
+import com.shaheen.webviewtest.model.Transaction;
 import com.shaheen.webviewtest.utils.Consts;
 import com.shaheen.webviewtest.FbPageFragment;
 import com.shaheen.webviewtest.MainListFragment;
@@ -36,6 +37,7 @@ import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.FbPage;
 import com.shaheen.webviewtest.model.UserProfile;
+import com.shaheen.webviewtest.utils.Utils;
 
 import java.util.List;
 
@@ -69,11 +71,10 @@ public class HomeActivity extends AppCompatActivity {
         List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
         if (fragmentList != null) {
             //TODO: Perform your logic to pass back press here
-            for(Fragment fragment : fragmentList){
-                if(fragment instanceof FbPageFragment){
-                   loadFragment(mainListFragment);
-                }
-                else {
+            for (Fragment fragment : fragmentList) {
+                if (fragment instanceof FbPageFragment) {
+                    loadFragment(mainListFragment);
+                } else {
                     super.onBackPressed();
                 }
             }
@@ -84,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
 
         context = this;
         mainListFragment = new MainListFragment();
-        BTN_Nav=findViewById(R.id.nav_btn);
+        BTN_Nav = findViewById(R.id.nav_btn);
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             userID = user.getUid();
@@ -112,26 +113,35 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        dl = (DrawerLayout)findViewById(R.id.activity_main);
-        t = new ActionBarDrawerToggle(this, dl,R.string.Open, R.string.Close);
+        dl = (DrawerLayout) findViewById(R.id.activity_main);
+        t = new ActionBarDrawerToggle(this, dl, R.string.Open, R.string.Close);
 
         dl.addDrawerListener(t);
         t.syncState();
 
 
-        nv = (NavigationView)findViewById(R.id.nv);
+        nv = (NavigationView) findViewById(R.id.nv);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                switch(id)
-                {
+                switch (id) {
                     case R.id.account:
-                        Toast.makeText(HomeActivity.this, "My Account",Toast.LENGTH_SHORT).show();break;
-                    case R.id.settings:
-                        Toast.makeText(HomeActivity.this, "Settings",Toast.LENGTH_SHORT).show();break;
+
+                        dl.closeDrawer(Gravity.LEFT);
+                        Intent intent = new Intent(HomeActivity.this,MyAccountActivity.class);
+                        startActivity(intent);
+
+
+                         break;
+                    case R.id.transactions:
+                        dl.closeDrawer(Gravity.LEFT);
+                        intent = new Intent(HomeActivity.this,TransactionsActivity.class);
+                        startActivity(intent);
+                        break;
                     case R.id.mycart:
-                        Toast.makeText(HomeActivity.this, "My Cart",Toast.LENGTH_SHORT).show();break;
+                        Toast.makeText(HomeActivity.this, "My Cart", Toast.LENGTH_SHORT).show();
+                        break;
                     default:
                         return true;
                 }
@@ -146,13 +156,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(t.onOptionsItemSelected(item))
+        if (t.onOptionsItemSelected(item))
             return true;
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
     private void mRedirectToLoginPage() {
@@ -181,9 +189,9 @@ public class HomeActivity extends AppCompatActivity {
         fragmentTransaction.commit(); // save the changes
     }
 
-    public static void updatePoint(final FbPage fbPage,int userType) {
+    public static void updatePoint(final FbPage fbPage, int userType) {
 
-        if (userType==Consts.THIS_USER) {
+        if (userType == Consts.THIS_USER) {
 
             UsersRef.getUserByUserId(context, userID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -196,7 +204,16 @@ public class HomeActivity extends AppCompatActivity {
                         int newPoints = currentPoints + fbPage.getPoints();
 
                         mUpdatePointsInFirebase(userID, newPoints, fbPage.getPageID(), Consts.THIS_USER);  // the user logged in this device
-                        mAddTransaction(userID,"You liked a page : +"+fbPage.getPoints()+" Pts");
+
+                        Transaction transaction = new Transaction();
+                        transaction.setBalance(newPoints);
+                        transaction.setDate(Utils.DateMonthyear(System.currentTimeMillis()));
+                        transaction.setPlusOrMinus(Consts.PLUS);
+                        transaction.setPoints(fbPage.getPoints());
+                        transaction.setType(Consts.TRANSACTION_I_LIKE);
+                        transaction.setMsg("You liked a page");
+
+                        mAddTransaction(userID, transaction);
 
 
                     } else {
@@ -209,8 +226,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 }
             });
-        }
-        else {
+        } else {
             UsersRef.getUserByUserId(context, fbPage.getUserID()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -221,13 +237,21 @@ public class HomeActivity extends AppCompatActivity {
                         int currentPoints = userProfile.getTotalPoints();
                         int newPoints = currentPoints - userProfile.getPointsPerLike();
 
-                        if (newPoints<0 ){
-                            newPoints=0;
+                        if (newPoints < 0) {
+                            newPoints = 0;
                         }
 
                         mUpdatePointsInFirebase(fbPage.getUserID(), newPoints, fbPage.getPageID(), Consts.THAT_USER);
 
-                        mAddTransaction(userID,"A user liked your page : -"+fbPage.getPoints()+" Pts");
+                        Transaction transaction = new Transaction();
+                        transaction.setBalance(newPoints);
+                        transaction.setDate(Utils.DateMonthyear(System.currentTimeMillis()));
+                        transaction.setPlusOrMinus(Consts.MINUS);
+                        transaction.setPoints(fbPage.getPoints());
+                        transaction.setType(Consts.TRANSACTION_U_LIKE);
+                        transaction.setMsg("A user liked your page");
+
+                        mAddTransaction(fbPage.getUserID(), transaction);
 
 
                     } else {
@@ -243,9 +267,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private static void mAddTransaction(String userID, String msg) {
+    private static void mAddTransaction(String userID, Transaction transaction) {
 
-        TransactionsRef.getInstance(context,userID).push().setValue(msg);
+        TransactionsRef.getInstance(context, userID).push().setValue(transaction);
 
     }
 
@@ -287,8 +311,8 @@ public class HomeActivity extends AppCompatActivity {
         UsersRef.getUserByUserId(context, userID).getRef().child(Consts.F_TOTAL_POINTS).setValue(newPoints);
 
 
-        if (userType==Consts.THAT_USER) {
-            PagesRef.getPageByPageId(context,pageID).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
+        if (userType == Consts.THAT_USER) {
+            PagesRef.getPageByPageId(context, pageID).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
         }
 
     }

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent"
+    tools:context=".activity.MyAccountActivity">
+
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:id="@+id/tb"
+        android:background="@color/colorPrimary"
+        android:layout_height="56dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:id="@+id/tv_pts"
+                android:padding="5dp"
+                android:visibility="gone"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:textColor="#fff"
+                android:textSize="16sp"/>
+
+
+            <ImageView
+                android:id="@+id/nav_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:src="@drawable/ic_arrow_back_black_24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="My Account"
+                android:layout_marginStart="20dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_toEndOf="@+id/nav_btn"
+                android:textColor="#fff"
+                android:textSize="16sp"
+                />
+
+        </RelativeLayout>
+
+
+
+    </android.support.v7.widget.Toolbar>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_below="@+id/tb"
+        android:layout_marginTop="5dp"
+        android:id="@+id/lyt_image"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/ic_account_circle_black_24dp"
+           />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_below="@+id/lyt_image"
+        android:layout_width="match_parent"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:id="@+id/name"
+        android:textSize="30sp"
+        android:layout_marginTop="15dp"
+        android:text="shaheen_bsv"
+        android:layout_height="wrap_content" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:id="@+id/lyt_points"
+        android:layout_below="@+id/name"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="25"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:id="@+id/points"
+            android:textSize="30sp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Points"
+            android:textColor="#000"
+            android:textSize="30sp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="30dp"
+        android:id="@+id/lyt_rank"
+        android:orientation="vertical"
+        android:layout_below="@+id/lyt_points"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="1"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:id="@+id/rank"
+            android:textSize="40sp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Global Rank"
+            android:textColor="#000"
+            android:textSize="30sp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginStart="10dp"
+        android:layout_below="@+id/lyt_rank"
+        android:layout_height="wrap_content">
+
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            >
+        <TextView
+            android:layout_width="match_parent"
+            android:text="1"
+            android:textColor="#000"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:id="@+id/i_like"
+            android:textSize="30sp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="My Page Likes"
+            android:textAlignment="center"
+            android:textColor="#000"
+            android:textSize="20sp"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:text="1"
+                android:textColor="#000"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:id="@+id/u_like"
+                android:textSize="30sp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:text="Liked Pages"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="20sp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:text="Edit Page Listing"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#fff"
+        android:id="@+id/edit"
+        android:background="#D11C1C"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
