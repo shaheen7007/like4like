@@ -70,9 +70,9 @@
 
         <ImageView
             android:id="@+id/profile_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/ic_account_circle_black_24dp"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:src="@drawable/fbpro"
            />
 
     </LinearLayout>
@@ -86,18 +86,28 @@
         android:id="@+id/name"
         android:textSize="30sp"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
         android:text="shaheen_bsv"
         android:layout_height="wrap_content" />
 
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_marginTop="40dp"
-        android:orientation="vertical"
         android:id="@+id/lyt_points"
         android:layout_below="@+id/name"
-        android:gravity="center"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardMaxElevation="6dp"
+        app:contentPadding="5dp"
+        android:layout_margin="5dp"
         android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="wrap_content"
@@ -114,17 +124,27 @@
             android:textColor="#000"
             android:textSize="30sp"
             android:layout_height="wrap_content" />
+        </LinearLayout>
 
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:id="@+id/lyt_rank"
+        android:layout_below="@+id/lyt_points"
+        app:cardCornerRadius="4dp"
+        android:layout_marginTop="30dp"
+        app:cardElevation="4dp"
+        app:cardMaxElevation="6dp"
+        app:contentPadding="5dp"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="30dp"
-        android:id="@+id/lyt_rank"
         android:orientation="vertical"
-        android:layout_below="@+id/lyt_points"
         android:gravity="center"
         android:layout_height="wrap_content">
 
@@ -145,16 +165,29 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_below="@+id/lyt_rank"
+        app:cardCornerRadius="4dp"
+        android:layout_marginTop="30dp"
+        app:cardElevation="4dp"
+        app:cardMaxElevation="6dp"
+        app:contentPadding="5dp"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="30dp"
         android:orientation="horizontal"
         android:weightSum="2"
         android:layout_marginStart="10dp"
-        android:layout_below="@+id/lyt_rank"
         android:layout_height="wrap_content">
-
 
 
         <LinearLayout
@@ -210,6 +243,7 @@
         </LinearLayout>
 
     </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 
     <Button

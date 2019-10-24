@@ -18,10 +18,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.shaheen.webviewtest.activity.HomeActivity;
+import com.shaheen.webviewtest.activity.MyAccountActivity;
 import com.shaheen.webviewtest.adapter.PagesGridAdapter;
 import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.UserLikedPagesRef;
+import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.FbPage;
+import com.shaheen.webviewtest.model.UserProfile;
 import com.shaheen.webviewtest.utils.Consts;
 import com.shaheen.webviewtest.utils.PrefManager;
 
@@ -44,9 +48,11 @@ public class MainListFragment extends Fragment {
     static FirebaseUser user;
     static ProgressDialog progressBar;
     static Button BTN_listMyPage;
-    BottomSheetAdd bottomSheet;
+    BottomSheetAdd bottomSheetAdd;
+    BottomSheetEdit bottomSheetEdit;
     static Context context;
     static FragmentManager fragmentManager;
+    int addOrEdit=Consts.ADD;
 
 
     @Override
@@ -56,9 +62,8 @@ public class MainListFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_main_list, container, false);
 
         init(view);
+        setVisibilityOfButton();
         //getUserLikedPages();
-
-
         return view;
     }
 
@@ -89,6 +94,35 @@ public class MainListFragment extends Fragment {
 
 
 
+    private void setVisibilityOfButton() {
+
+        UsersRef.getUserByUserId(getActivity(),user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+
+                if (userProfile.getListedPage()==null){
+                    addOrEdit=Consts.ADD;
+                    BTN_listMyPage.setText("List My Page");
+                }
+                else {
+                    addOrEdit=Consts.EDIT;
+                    BTN_listMyPage.setText("Edit Page Listing");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
+
+
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.points_menu, menu);
@@ -117,6 +151,8 @@ return true;
 
     private void init(View view) {
 
+        HomeActivity.changeNavButton(Consts.DRAWER);
+
         context = getActivity();
         prefManager = PrefManager.getInstance(context);
         fragmentManager = getFragmentManager();
@@ -132,9 +168,17 @@ return true;
         BTN_listMyPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheet = BottomSheetAdd.newInstance();
-                bottomSheet.show(getActivity().getSupportFragmentManager(),
-                        "list page");
+
+                if (addOrEdit==Consts.EDIT) {
+                    bottomSheetEdit = BottomSheetEdit.newInstance();
+                    bottomSheetEdit.show(getActivity().getSupportFragmentManager(),
+                            "edit page");
+                }
+                else {
+                    bottomSheetAdd = BottomSheetAdd.newInstance();
+                    bottomSheetAdd.show(getActivity().getSupportFragmentManager(),
+                            "add page");
+                }
             }
         });
 
@@ -175,14 +219,6 @@ return true;
     }
 
     private static void getPagesList() {
-
-
-        if (prefManager.isPageListed()) {
-            BTN_listMyPage.setVisibility(View.GONE);
-        } else {
-            BTN_listMyPage.setVisibility(View.VISIBLE);
-        }
-
 
         fbPageList = new ArrayList<>();
 

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -123,6 +124,9 @@ public class FbPageFragment extends Fragment {
 
                                     progressBar.dismiss();
 
+
+                                    mGoToMainListFragment();
+
                                 } else {
                                     webview.setOnTouchListener(new View.OnTouchListener() {
                                         @Override
@@ -160,6 +164,10 @@ public class FbPageFragment extends Fragment {
                                             Log.e("loginstatus", "false");
                                             BTN_close.setVisibility(View.VISIBLE);
                                             Toast.makeText(getActivity(), "Login to continue", Toast.LENGTH_SHORT).show();
+
+
+                                            //mShowHowToLoginDialog();
+
                                         }
 
 
@@ -181,6 +189,7 @@ public class FbPageFragment extends Fragment {
 
                                         webview.loadUrl("https://mbasic.facebook.com/a/profile.php?fan&id=" + fanid + "&origin=page_profile&pageSuggestionsOnLiking=1&gfid=" + gfid + "&refid=17");
                                         onPageFinished(webview, url);
+                                        progressBar.show();
 
                                     } else {
 
@@ -209,14 +218,30 @@ public class FbPageFragment extends Fragment {
             }
         });
 
-
         webview.loadUrl("https://mbasic.facebook.com/" + fbPage.getPageID());
-        progressBar.show();
+      progressBar.show();
 
 
         return view;
     }
 
+    private void mShowHowToLoginDialog() {
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle("If you face trouble while logging in:");
+        alert.setMessage("* Click on 'Login' button \n* Enter username and password\n* Click 'Login' button\n* Will ask you to enter login code. Click on 'having trouble?'\n* Click on 'send me a text message with my login code'\n* Click 'Continue' button\n* Enter login code received and click 'Submit Code'");
+
+        alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
+
+
+    }
 
 
     private void mGoToMainListFragment() {
@@ -229,6 +254,7 @@ public class FbPageFragment extends Fragment {
 
     @SuppressLint("JavascriptInterface")
     private void init(View view) {
+        HomeActivity.changeNavButton(Consts.BACK);
         user = FirebaseAuth.getInstance().getCurrentUser();
         BTN_close = view.findViewById(R.id.btn_close);
         webview = (WebView) view.findViewById(R.id.webview);

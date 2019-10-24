@@ -28,7 +28,7 @@ public class SignupActivity extends AppCompatActivity {
 
     EditText _nameText;
     EditText _emailText;
-    EditText _passwordText;
+    EditText _passwordText,_confirmPasswordText;
     Button _signupButton;
     TextView _loginLink;
 
@@ -61,6 +61,7 @@ public class SignupActivity extends AppCompatActivity {
         _nameText = findViewById(R.id.input_name);
         _emailText = findViewById(R.id.input_email);
         _passwordText = findViewById(R.id.input_password);
+        _confirmPasswordText = findViewById(R.id.input_confirm_password);
         _signupButton = (findViewById(R.id.btn_signup));
         _loginLink = (findViewById(R.id.link_login));
 
@@ -69,7 +70,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void signup() {
-        Log.d(TAG, "Signup");
+       // Log.d(TAG, "Signup");
 
         if (!validate()) {
             onSignupFailed();
@@ -91,17 +92,23 @@ public class SignupActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        _signupButton.setEnabled(true);
+
+                        progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             mAddProfileToFirebaseDB(user,name);
 
+
+
                             mMoveToHomePage();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignupActivity.this, "Authentication failed.",
+                            Toast.makeText(SignupActivity.this, task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             //  updateUI(null);
                         }
@@ -146,6 +153,11 @@ public class SignupActivity extends AppCompatActivity {
             valid = false;
         } else {
             _passwordText.setError(null);
+        }
+
+        if ( !(_confirmPasswordText.getText().toString().equals(_passwordText.getText().toString()))){
+            _confirmPasswordText.setError("passwords don't match");
+            valid = false;
         }
 
         return valid;

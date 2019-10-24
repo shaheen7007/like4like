@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.shaheen.webviewtest.FbLoginFragment;
 import com.shaheen.webviewtest.databaseRef.TransactionsRef;
 import com.shaheen.webviewtest.model.Transaction;
 import com.shaheen.webviewtest.utils.Consts;
@@ -37,6 +38,7 @@ import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.FbPage;
 import com.shaheen.webviewtest.model.UserProfile;
+import com.shaheen.webviewtest.utils.PrefManager;
 import com.shaheen.webviewtest.utils.Utils;
 
 import java.util.List;
@@ -46,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
     FrameLayout container;
     FragmentTransaction fragmentTransaction;
     MainListFragment mainListFragment;
+    FbLoginFragment fbLoginFragment;
     static TextView TV_points;
     static Context context;
     FirebaseUser user;
@@ -53,7 +56,8 @@ public class HomeActivity extends AppCompatActivity {
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
     private NavigationView nv;
-    ImageView BTN_Nav;
+    static ImageView BTN_Nav;
+    PrefManager prefManager;
 
 
     @Override
@@ -63,7 +67,13 @@ public class HomeActivity extends AppCompatActivity {
 
         init();
         // load mainList fragment
-        loadFragment(mainListFragment);
+
+        if (prefManager.getIsFirsttime()){
+            loadFragment(fbLoginFragment);
+        }
+        else {
+            loadFragment(mainListFragment);
+        }
     }
 
     @Override
@@ -83,9 +93,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private void init() {
 
+        prefManager=PrefManager.getInstance(HomeActivity.this);
         context = this;
         mainListFragment = new MainListFragment();
+        fbLoginFragment=new FbLoginFragment();
         BTN_Nav = findViewById(R.id.nav_btn);
+        changeNavButton(Consts.DRAWER);
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             userID = user.getUid();
@@ -108,7 +121,18 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                dl.openDrawer(Gravity.LEFT);
+
+                List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+                if (fragmentList != null) {
+                    //TODO: Perform your logic to pass back press here
+                    for (Fragment fragment : fragmentList) {
+                        if (fragment instanceof FbPageFragment) {
+                            loadFragment(mainListFragment);
+                        } else {
+                            dl.openDrawer(Gravity.LEFT);
+                        }
+                    }
+                }
             }
         });
 
@@ -129,18 +153,23 @@ public class HomeActivity extends AppCompatActivity {
                     case R.id.account:
 
                         dl.closeDrawer(Gravity.LEFT);
-                        Intent intent = new Intent(HomeActivity.this,MyAccountActivity.class);
+                        Intent intent = new Intent(HomeActivity.this, MyAccountActivity.class);
                         startActivity(intent);
 
 
-                         break;
+                        break;
                     case R.id.transactions:
                         dl.closeDrawer(Gravity.LEFT);
-                        intent = new Intent(HomeActivity.this,TransactionsActivity.class);
+                        intent = new Intent(HomeActivity.this, TransactionsActivity.class);
                         startActivity(intent);
                         break;
-                    case R.id.mycart:
-                        Toast.makeText(HomeActivity.this, "My Cart", Toast.LENGTH_SHORT).show();
+                    case R.id.earn_more:
+                        Toast.makeText(HomeActivity.this, "Earn More Points", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.faq:
+                        dl.closeDrawer(Gravity.LEFT);
+                        intent = new Intent(HomeActivity.this, FAQActivity.class);
+                        startActivity(intent);
                         break;
                     default:
                         return true;
@@ -314,6 +343,21 @@ public class HomeActivity extends AppCompatActivity {
         if (userType == Consts.THAT_USER) {
             PagesRef.getPageByPageId(context, pageID).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
         }
+
+    }
+
+    public static void changeNavButton(int c){
+
+        if (c==Consts.DRAWER){
+            BTN_Nav.setImageResource(R.drawable.ic_menu_white_24dp);
+            BTN_Nav.setVisibility(View.VISIBLE);
+        }
+        else if (c==Consts.BACK){
+            BTN_Nav.setImageResource(R.drawable.ic_arrow_back_black_24dp);
+            BTN_Nav.setVisibility(View.INVISIBLE);
+        }
+
+
 
     }
 }

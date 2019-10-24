@@ -2,11 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/account"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_account_box_black_24dp"
         android:title="My Account"/>
     <item android:id="@+id/transactions"
+        android:icon="@drawable/ic_transfer_within_a_station_black_24dp"
         android:title="My Transactions"/>
-    <item android:id="@+id/mycart"
-        android:title="My Cart"/>
+    <item android:id="@+id/earn_more"
+        android:icon="@drawable/ic_rich"
+        android:title="Earn More Points"/>
+
+    <item android:id="@+id/faq"
+        android:icon="@drawable/ic_question_answer_black_24dp"
+        android:title="FAQ"/>
 
 </menu>

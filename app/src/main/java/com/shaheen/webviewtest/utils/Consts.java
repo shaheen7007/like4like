@@ -19,4 +19,7 @@ public interface Consts {
     String F_POINTS_PER_LIKE = "pointsPerLike";
     int ADD = 1;
     int EDIT = 2;
+    String FAQ = "faq";
+    int DRAWER = 1;
+    int BACK = 2;
 }
