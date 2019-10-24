@@ -11,6 +11,14 @@
         android:layout_height="fill_parent"
         android:layout_above="@+id/btn_close"
         />
+    <WebView
+        android:id="@+id/webview1"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/btn_close"
+        />
+
 
     <Button
         android:id="@+id/btn_close"

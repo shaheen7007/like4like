@@ -164,7 +164,9 @@ public class HomeActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case R.id.earn_more:
-                        Toast.makeText(HomeActivity.this, "Earn More Points", Toast.LENGTH_SHORT).show();
+                        dl.closeDrawer(Gravity.LEFT);
+                        intent = new Intent(HomeActivity.this, EarnMorePointsActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.faq:
                         dl.closeDrawer(Gravity.LEFT);

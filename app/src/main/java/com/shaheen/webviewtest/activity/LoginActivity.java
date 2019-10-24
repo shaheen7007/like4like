@@ -1,6 +1,8 @@
 package com.shaheen.webviewtest.activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -116,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             mCheckIfUserAlreadyListedPage(user.getUid());
+                            progressDialog.dismiss();
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -151,12 +154,16 @@ public class LoginActivity extends AppCompatActivity {
 
                     } else {
                         prefManager.setIsPageListed(false);
-                        mMoveToHomePage();
+                        mShowHowToLoginDialog();
                     }
 
                 } else {
                     prefManager.setIsPageListed(false);
-                    mMoveToHomePage();
+
+
+                    mShowHowToLoginDialog();
+
+
                 }
 
 
@@ -165,7 +172,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                mMoveToHomePage();
+
+                mShowHowToLoginDialog();
             }
         });
 
@@ -181,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
                 FbPage fbPage = dataSnapshot.getValue(FbPage.class);
 
                 prefManager.setPointPerLike(fbPage.getPoints());
-                mMoveToHomePage();
+                mShowHowToLoginDialog();
 
             }
 
@@ -190,13 +198,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -245,4 +247,31 @@ public class LoginActivity extends AppCompatActivity {
 
         return valid;
     }
+
+
+    private void mShowHowToLoginDialog() {
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Facebook login session required:");
+        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like logging in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE\n\n* If you face any trouble logging in, click on 'having trouble?' button");
+
+        alert.setCancelable(false);
+        alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                mMoveToHomePage();
+            }
+        });
+
+        alert.show();
+
+
+    }
+
+
+
+
+
+
 }

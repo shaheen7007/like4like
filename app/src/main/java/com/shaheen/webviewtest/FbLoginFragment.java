@@ -77,6 +77,8 @@ public class FbLoginFragment extends Fragment {
 
         init(view);
 
+
+
         BTN_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +105,9 @@ public class FbLoginFragment extends Fragment {
                                 if (html.contains("What's on your mind?")){
                                     BTN_close.setVisibility(View.VISIBLE);
                                     mGoToMainListFragment();
+                                }
+                                else {
+                                    Toast.makeText(getActivity(), "Login to continue", Toast.LENGTH_LONG).show();
                                 }
 
 

@@ -1,0 +1,212 @@
+package com.shaheen.webviewtest.activity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.shaheen.webviewtest.FbLoginFragment;
+import com.shaheen.webviewtest.FbPageFragment;
+import com.shaheen.webviewtest.MainListFragment;
+import com.shaheen.webviewtest.R;
+import com.shaheen.webviewtest.databaseRef.PagesRef;
+import com.shaheen.webviewtest.databaseRef.TransactionsRef;
+import com.shaheen.webviewtest.databaseRef.UsersRef;
+import com.shaheen.webviewtest.model.FbPage;
+import com.shaheen.webviewtest.model.Transaction;
+import com.shaheen.webviewtest.model.UserProfile;
+import com.shaheen.webviewtest.utils.Consts;
+import com.shaheen.webviewtest.utils.PrefManager;
+import com.shaheen.webviewtest.utils.Utils;
+
+import java.util.List;
+
+public class EarnMorePointsActivity extends AppCompatActivity {
+
+    static TextView TV_points;
+    static Context context;
+    FirebaseUser user;
+    static String userID = null;
+    static ImageView BTN_Nav;
+    PrefManager prefManager;
+    Button BTN_watchVideo;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_earnmorepoints);
+
+        init();
+    }
+
+    private void init() {
+
+        prefManager = PrefManager.getInstance(EarnMorePointsActivity.this);
+        context = this;
+        BTN_Nav = findViewById(R.id.nav_btn);
+        BTN_watchVideo=findViewById(R.id.btn_watchVideo);
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userID = user.getUid();
+            getCurrentPointsAndSetInTextView(userID);
+        } else {
+            mRedirectToLoginPage();
+        }
+
+        TV_points = (TextView) findViewById(R.id.tv_pts);
+        TV_points.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                animatePointsText();
+
+            }
+        });
+
+        BTN_Nav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                EarnMorePointsActivity.super.onBackPressed();
+            }
+        });
+
+
+
+        BTN_watchVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                updatePoint(30);
+
+            }
+        });
+
+
+    }
+
+
+    private void mRedirectToLoginPage() {
+
+        Intent intent = new Intent(EarnMorePointsActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
+    private static void animatePointsText() {
+        Animation rotation = AnimationUtils.loadAnimation(context, R.anim.anim);
+        rotation.setRepeatCount(1);
+
+        TV_points.startAnimation(rotation);
+    }
+
+    public static void updatePoint(final int points) {
+
+            UsersRef.getUserByUserId(context, userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+
+                        //   for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                        UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                        int currentPoints = userProfile.getTotalPoints();
+                        int newPoints = currentPoints +points;
+
+                        mUpdatePointsInFirebase(userID, newPoints);
+
+                        Transaction transaction = new Transaction();
+                        transaction.setBalance(newPoints);
+                        transaction.setDate(Utils.DateMonthyear(System.currentTimeMillis()));
+                        transaction.setPlusOrMinus(Consts.PLUS);
+                        transaction.setPoints(points);
+                        transaction.setType(Consts.TRANSACTION_AD_WATCH);
+                        transaction.setMsg("You watched a video Ad");
+
+                        mAddTransaction(userID, transaction);
+
+
+                    } else {
+                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+    private static void mAddTransaction(String userID, Transaction transaction) {
+
+        TransactionsRef.getInstance(context, userID).push().setValue(transaction);
+
+    }
+
+
+    public static void getCurrentPointsAndSetInTextView(String userID) {
+
+        Log.d("userID", userID);
+
+        UsersRef.getUserByUserId(context, userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    //   for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                    UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
+                    int currentPoints = userProfile.getTotalPoints();
+
+                    animatePointsText();
+                    TV_points.setText(currentPoints + " Pts");
+
+
+                    //   }
+
+                } else {
+                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private static void mUpdatePointsInFirebase(String userID, int newPoints) {
+
+        UsersRef.getUserByUserId(context, userID).getRef().child(Consts.F_TOTAL_POINTS).setValue(newPoints);
+
+        getCurrentPointsAndSetInTextView(userID);
+
+    }
+
+}

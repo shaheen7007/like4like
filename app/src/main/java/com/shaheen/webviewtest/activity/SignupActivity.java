@@ -1,6 +1,8 @@
 package com.shaheen.webviewtest.activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -104,7 +106,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
 
-                            mMoveToHomePage();
+                            mShowHowToLoginDialog();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -181,5 +183,27 @@ public class SignupActivity extends AppCompatActivity {
 
         Toast.makeText(SignupActivity.this, "SignUp successful", Toast.LENGTH_SHORT).show();
     }
+
+
+    private void mShowHowToLoginDialog() {
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Facebook login session required:");
+        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like logging in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE\n\n* If you face any trouble logging in, click on 'having trouble?' button");
+
+        alert.setCancelable(false);
+        alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                mMoveToHomePage();
+            }
+        });
+
+        alert.show();
+
+
+    }
+
 
 }
