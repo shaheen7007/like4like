@@ -2,24 +2,29 @@ package com.shaheen.webviewtest;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.activity.HomeActivity;
-import com.shaheen.webviewtest.activity.MyAccountActivity;
 import com.shaheen.webviewtest.adapter.PagesGridAdapter;
 import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.UserLikedPagesRef;
@@ -53,6 +58,8 @@ public class MainListFragment extends Fragment {
     static Context context;
     static FragmentManager fragmentManager;
     int addOrEdit=Consts.ADD;
+    AdView mAdView_banner;
+    private static InterstitialAd mInterstitialAd;
 
 
     @Override
@@ -151,6 +158,31 @@ return true;
 
     private void init(View view) {
 
+        //change ad unit id - in layout
+
+
+        //change ad unit id
+        mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+        });
+
+
+        HomeActivity.showToolbar();
+
+        mAdView_banner = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView_banner.loadAd(adRequest);
+
         HomeActivity.changeNavButton(Consts.DRAWER);
 
         context = getActivity();
@@ -194,21 +226,30 @@ return true;
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // set an Intent to Another Activity
-                /*Intent intent = new Intent(getActivity(), FbPageFragment.class);
-                intent.putExtra("page", fbPageList.get(position));
-                startActivity(intent);
 
-                Toast.makeText(getActivity(), fbPageList.get(position).getPageID(), Toast.LENGTH_SHORT).show();
-*/
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("page", fbPageList.get(position));
-                fbPageFragment.setArguments(bundle);
-                ft = fragmentManager.beginTransaction();
-                ft.replace(R.id.container, fbPageFragment, "fbpage");
-                ft.setTransition(
-                        FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
+
+                prefManager.setCountForAd(prefManager.getCountForAd()+1);
+                if (prefManager.getCountForAd()%4==0){
+
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    } else {
+                        prefManager.setCountForAd(prefManager.getCountForAd()-1);
+                        Log.d("TAG", "The interstitial wasn't loaded yet.");
+                    }
+
+                }
+                else {
+
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("page", fbPageList.get(position));
+                    fbPageFragment.setArguments(bundle);
+                    ft = fragmentManager.beginTransaction();
+                    ft.replace(R.id.container, fbPageFragment, "fbpage");
+                    ft.setTransition(
+                            FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    ft.commit();
+                }
             }
 
         });

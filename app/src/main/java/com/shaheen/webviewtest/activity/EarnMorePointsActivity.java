@@ -1,48 +1,40 @@
 package com.shaheen.webviewtest.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.shaheen.webviewtest.FbLoginFragment;
-import com.shaheen.webviewtest.FbPageFragment;
-import com.shaheen.webviewtest.MainListFragment;
 import com.shaheen.webviewtest.R;
-import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.TransactionsRef;
 import com.shaheen.webviewtest.databaseRef.UsersRef;
-import com.shaheen.webviewtest.model.FbPage;
 import com.shaheen.webviewtest.model.Transaction;
 import com.shaheen.webviewtest.model.UserProfile;
 import com.shaheen.webviewtest.utils.Consts;
 import com.shaheen.webviewtest.utils.PrefManager;
 import com.shaheen.webviewtest.utils.Utils;
-
-import java.util.List;
 
 public class EarnMorePointsActivity extends AppCompatActivity {
 
@@ -53,6 +45,8 @@ public class EarnMorePointsActivity extends AppCompatActivity {
     static ImageView BTN_Nav;
     PrefManager prefManager;
     Button BTN_watchVideo;
+    private RewardedAd rewardedAd;
+    AdView mAdView_banner;
 
 
     @Override
@@ -65,10 +59,24 @@ public class EarnMorePointsActivity extends AppCompatActivity {
 
     private void init() {
 
+
+
+        mAdView_banner = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView_banner.loadAd(adRequest);
+
+
+        rewardedAd = new RewardedAd(this,
+                "ca-app-pub-3940256099942544/5224354917"); //change ad unit id
+
+
+
         prefManager = PrefManager.getInstance(EarnMorePointsActivity.this);
         context = this;
         BTN_Nav = findViewById(R.id.nav_btn);
         BTN_watchVideo=findViewById(R.id.btn_watchVideo);
+        loadRewardedVideo();
+        BTN_watchVideo.setEnabled(false);
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             userID = user.getUid();
@@ -101,13 +109,109 @@ public class EarnMorePointsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                updatePoint(30);
+
+                if (rewardedAd.isLoaded()) {
+                    Activity activityContext = EarnMorePointsActivity.this;
+                    RewardedAdCallback adCallback = new RewardedAdCallback() {
+                        @Override
+                        public void onRewardedAdOpened() {
+                            // Ad opened.
+                        }
+
+                        @Override
+                        public void onRewardedAdClosed() {
+
+                        }
+
+                        @Override
+                        public void onUserEarnedReward(@NonNull RewardItem reward) {
+
+                            loadRewardedVideo();
+                            updatePoint(20);
+                            Toast.makeText(EarnMorePointsActivity.this, "You earned "+20+" reward points", Toast.LENGTH_SHORT).show();
+
+
+                        }
+
+                        @Override
+                        public void onRewardedAdFailedToShow(int errorCode) {
+
+                            loadRewardedVideo();
+                            Toast.makeText(EarnMorePointsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    };
+                    rewardedAd.show(activityContext, adCallback);
+
+                } else {
+                    loadRewardedVideo();
+                    Toast.makeText(EarnMorePointsActivity.this, "Please try again later", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
 
 
+
+
+
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void loadRewardedVideo() {
+
+        BTN_watchVideo.setEnabled(false);
+
+
+        rewardedAd = new RewardedAd(this,
+                "ca-app-pub-3940256099942544/5224354917");
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+
+                BTN_watchVideo.setEnabled(true);
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(int errorCode) {
+                BTN_watchVideo.setEnabled(false);
+            }
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+
+
+    }
+
+
+
+
+       /* public RewardedAd createAndLoadRewardedAd() {
+             rewardedAd = new RewardedAd(this,
+                    "ca-app-pub-3940256099942544/5224354917");
+            RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+                @Override
+                public void onRewardedAdLoaded() {
+                    // Ad successfully loaded.
+                }
+
+                @Override
+                public void onRewardedAdFailedToLoad(int errorCode) {
+                    // Ad failed to load.
+                }
+            };
+            rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+            return rewardedAd;
+        }*/
+
+
+
+
+
 
 
     private void mRedirectToLoginPage() {

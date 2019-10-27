@@ -4,8 +4,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -41,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView _signupLink;
     private FirebaseAuth mAuth;
     private PrefManager prefManager;
+    ProgressDialog progressDialog;
+    AdView mAdView_banner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void init() {
+
+        //change ad unit id in layout
+        mAdView_banner = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView_banner.loadAd(adRequest);
+
+
+
         prefManager = PrefManager.getInstance(this);
         _emailText = findViewById(R.id.input_email);
         _passwordText = findViewById(R.id.input_password);
@@ -78,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if (currentUser != null) {
+        if (currentUser != null && !prefManager.getIsFirsttime()) {
             mMoveToHomePage();
         }
     }
@@ -99,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //_loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
@@ -118,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             mCheckIfUserAlreadyListedPage(user.getUid());
-                            progressDialog.dismiss();
+
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -154,10 +166,12 @@ public class LoginActivity extends AppCompatActivity {
 
                     } else {
                         prefManager.setIsPageListed(false);
+                        progressDialog.dismiss();
                         mShowHowToLoginDialog();
                     }
 
                 } else {
+                    progressDialog.dismiss();
                     prefManager.setIsPageListed(false);
 
 
@@ -173,6 +187,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                progressDialog.dismiss();
                 mShowHowToLoginDialog();
             }
         });
@@ -189,6 +204,7 @@ public class LoginActivity extends AppCompatActivity {
                 FbPage fbPage = dataSnapshot.getValue(FbPage.class);
 
                 prefManager.setPointPerLike(fbPage.getPoints());
+                progressDialog.dismiss();
                 mShowHowToLoginDialog();
 
             }

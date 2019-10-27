@@ -14,7 +14,18 @@
     android:layout_height="match_parent"
     tools:context=".activity.HomeActivity">
 
-    <android.support.v7.widget.Toolbar
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+    </com.google.android.gms.ads.AdView>
+
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:id="@+id/tb"
         android:background="@color/colorPrimary"
@@ -61,15 +72,26 @@
 
 
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:padding="15dp"
+        android:layout_above="@+id/adView"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tb">
 
    <Button
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:text="Watch V"
+       android:background="@color/design_default_color_primary"
+       android:textColor="#ffff"
+       android:textAllCaps="false"
+       android:layout_marginTop="10dp"
+       android:text="Watch Video Ad : Earn 20 Points"
        android:layout_below="@+id/tb"
        android:id="@+id/btn_watchVideo"/>
+    </LinearLayout>
 
 
 

@@ -16,6 +16,7 @@ public class PrefManager {
     private static final String IS_PAGE_LISTED = "is_page_listed";
     private static final String IS_FIRST_TIME = "is_first_time";
     private static final String POINT_PER_LIKE = "points_per_like";
+    private static final String COUNT_FOR_AD = "count_for_ad";
 
 
     // ===========================================================
@@ -119,6 +120,14 @@ public class PrefManager {
 
     public void setPointPerLike(int point){
         putInt(POINT_PER_LIKE,point);
+    }
+
+    public int getCountForAd(){
+        return prefs.getInt(COUNT_FOR_AD, 1);
+    }
+
+    public void setCountForAd(int count){
+        putInt(COUNT_FOR_AD,count);
     }
 
    }

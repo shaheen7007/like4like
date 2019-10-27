@@ -2,15 +2,16 @@ package com.shaheen.webviewtest.activity;
 
 import android.app.ProgressDialog;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -19,9 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.R;
 import com.shaheen.webviewtest.adapter.TransactionsAdapter;
 import com.shaheen.webviewtest.databaseRef.TransactionsRef;
-import com.shaheen.webviewtest.model.FbPage;
 import com.shaheen.webviewtest.model.Transaction;
-import com.shaheen.webviewtest.utils.Consts;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +35,7 @@ public class TransactionsActivity extends AppCompatActivity {
     TransactionsAdapter transactionsAdapter;
     ProgressDialog dialog;
     ImageView BTN_back;
+    AdView mAdView_banner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +45,13 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     private void init() {
+        //change ad unit id - in layout
+
+        mAdView_banner = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView_banner.loadAd(adRequest);
+
+
         RV_transactions = (RecyclerView) findViewById(R.id.list_transactions);
         BTN_back = findViewById(R.id.nav_btn);
 

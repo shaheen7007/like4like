@@ -2,14 +2,16 @@ package com.shaheen.webviewtest.activity;
 
 import android.app.ProgressDialog;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -17,11 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.R;
 import com.shaheen.webviewtest.adapter.FaqAdapter;
-import com.shaheen.webviewtest.adapter.TransactionsAdapter;
 import com.shaheen.webviewtest.databaseRef.FAQRef;
-import com.shaheen.webviewtest.databaseRef.TransactionsRef;
 import com.shaheen.webviewtest.model.FAQ;
-import com.shaheen.webviewtest.model.Transaction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +35,7 @@ public class FAQActivity extends AppCompatActivity {
     FaqAdapter faqAdapter;
     ProgressDialog dialog;
     ImageView BTN_back;
+    AdView mAdView_banner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,12 @@ public class FAQActivity extends AppCompatActivity {
     }
 
     private void init() {
+
+        mAdView_banner = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView_banner.loadAd(adRequest);
+
+
         RV_faq = (RecyclerView) findViewById(R.id.list_faq);
         BTN_back = findViewById(R.id.nav_btn);
 

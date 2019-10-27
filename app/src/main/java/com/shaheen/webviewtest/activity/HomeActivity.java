@@ -2,14 +2,20 @@ package com.shaheen.webviewtest.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,6 +28,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -58,6 +67,9 @@ public class HomeActivity extends AppCompatActivity {
     private NavigationView nv;
     static ImageView BTN_Nav;
     PrefManager prefManager;
+    static Toolbar toolbar;
+    private InterstitialAd mInterstitialAd;
+
 
 
     @Override
@@ -69,9 +81,12 @@ public class HomeActivity extends AppCompatActivity {
         // load mainList fragment
 
         if (prefManager.getIsFirsttime()){
+            toolbar.setVisibility(View.GONE);
             loadFragment(fbLoginFragment);
         }
         else {
+
+            toolbar.setVisibility(View.VISIBLE);
             loadFragment(mainListFragment);
         }
     }
@@ -93,6 +108,30 @@ public class HomeActivity extends AppCompatActivity {
 
     private void init() {
 
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+
+        //change ad unit id
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+        });
+
+        toolbar = findViewById(R.id.tb);
         prefManager=PrefManager.getInstance(HomeActivity.this);
         context = this;
         mainListFragment = new MainListFragment();
@@ -148,6 +187,13 @@ public class HomeActivity extends AppCompatActivity {
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                } else {
+                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                }
+
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.account:
@@ -155,8 +201,6 @@ public class HomeActivity extends AppCompatActivity {
                         dl.closeDrawer(Gravity.LEFT);
                         Intent intent = new Intent(HomeActivity.this, MyAccountActivity.class);
                         startActivity(intent);
-
-
                         break;
                     case R.id.transactions:
                         dl.closeDrawer(Gravity.LEFT);
@@ -360,6 +404,10 @@ public class HomeActivity extends AppCompatActivity {
         }
 
 
+    }
 
+    public static void showToolbar()
+    {
+        toolbar.setVisibility(View.VISIBLE);
     }
 }
