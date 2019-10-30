@@ -23,4 +23,5 @@ public interface Consts {
     int DRAWER = 1;
     int BACK = 2;
     int TRANSACTION_AD_WATCH = 3;
+    String F_DEVICE_TOKEN = "deviceToken";
 }

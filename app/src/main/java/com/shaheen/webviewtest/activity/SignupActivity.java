@@ -24,6 +24,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.shaheen.webviewtest.R;
 import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.UserProfile;
+import com.shaheen.webviewtest.utils.PrefManager;
+import com.shaheen.webviewtest.utils.Utils;
 
 
 public class SignupActivity extends AppCompatActivity {
@@ -36,6 +38,7 @@ public class SignupActivity extends AppCompatActivity {
     Button _signupButton;
     TextView _loginLink;
     AdView mAdView_banner;
+    PrefManager prefManager;
 
 
     private FirebaseAuth mAuth;
@@ -49,7 +52,9 @@ public class SignupActivity extends AppCompatActivity {
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signup();
+                if (Utils.isInternetAvailable(SignupActivity.this)) {
+                    signup();
+                }
             }
         });
 
@@ -79,6 +84,8 @@ public class SignupActivity extends AppCompatActivity {
         _loginLink = (findViewById(R.id.link_login));
 
         mAuth = FirebaseAuth.getInstance();
+
+        prefManager=PrefManager.getInstance(SignupActivity.this);
 
     }
 
@@ -116,6 +123,7 @@ public class SignupActivity extends AppCompatActivity {
                             mAddProfileToFirebaseDB(user,name);
 
 
+                            Toast.makeText(SignupActivity.this, "Like4Like account created successfully", Toast.LENGTH_SHORT).show();
 
                             mShowHowToLoginDialog();
                         } else {
@@ -135,7 +143,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+      //  Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
      //   _signupButton.setEnabled(true);
     }
@@ -179,6 +187,7 @@ public class SignupActivity extends AppCompatActivity {
     private void mMoveToHomePage() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
+        finish();
 
     }
 
@@ -189,6 +198,7 @@ public class SignupActivity extends AppCompatActivity {
         profile.setUserEmail(user.getEmail());
         profile.setTotalPoints(0);
         profile.setUserName(name);
+        profile.setDeviceToken(prefManager.getDeviceToken());
 
         UsersRef.getInstance(SignupActivity.this).getRef().child(profile.getUserID()).setValue(profile);
 

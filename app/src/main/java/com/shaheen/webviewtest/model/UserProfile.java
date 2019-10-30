@@ -7,6 +7,15 @@ public class UserProfile {
     private int TotalPoints=0;
     private String fbPage;
     private int pointsPerLike;
+    private String deviceToken;
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 
     public String getListedPage() {
         return listedPage;

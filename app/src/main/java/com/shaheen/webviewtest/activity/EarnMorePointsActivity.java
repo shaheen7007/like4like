@@ -60,6 +60,7 @@ public class EarnMorePointsActivity extends AppCompatActivity {
     private void init() {
 
 
+        Utils.isInternetAvailable(EarnMorePointsActivity.this);
 
         mAdView_banner = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();

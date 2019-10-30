@@ -21,6 +21,7 @@ import com.shaheen.webviewtest.R;
 import com.shaheen.webviewtest.adapter.TransactionsAdapter;
 import com.shaheen.webviewtest.databaseRef.TransactionsRef;
 import com.shaheen.webviewtest.model.Transaction;
+import com.shaheen.webviewtest.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +47,9 @@ public class TransactionsActivity extends AppCompatActivity {
 
     private void init() {
         //change ad unit id - in layout
+
+        Utils.isInternetAvailable(TransactionsActivity.this);
+
 
         mAdView_banner = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();

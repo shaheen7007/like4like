@@ -23,6 +23,7 @@ import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.Transaction;
 import com.shaheen.webviewtest.model.UserProfile;
 import com.shaheen.webviewtest.utils.Consts;
+import com.shaheen.webviewtest.utils.Utils;
 
 public class MyAccountActivity extends AppCompatActivity {
 
@@ -55,15 +56,17 @@ public class MyAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (addOrEdit==Consts.EDIT) {
-                    bottomSheetEdit = BottomSheetEdit.newInstance();
-                    bottomSheetEdit.show(getSupportFragmentManager(),
-                            "edit page");
-                }
-                else {
-                    bottomSheetAdd = BottomSheetAdd.newInstance();
-                    bottomSheetAdd.show(getSupportFragmentManager(),
-                            "add page");
+                if (Utils.isInternetAvailable(MyAccountActivity.this)) {
+
+                    if (addOrEdit == Consts.EDIT) {
+                        bottomSheetEdit = BottomSheetEdit.newInstance();
+                        bottomSheetEdit.show(getSupportFragmentManager(),
+                                "edit page");
+                    } else {
+                        bottomSheetAdd = BottomSheetAdd.newInstance();
+                        bottomSheetAdd.show(getSupportFragmentManager(),
+                                "add page");
+                    }
                 }
             }
         });
@@ -205,6 +208,9 @@ public class MyAccountActivity extends AppCompatActivity {
     }
 
     private void init() {
+
+        Utils.isInternetAvailable(MyAccountActivity.this);
+
 
         dialog = new ProgressDialog(this);
         user = FirebaseAuth.getInstance().getCurrentUser();

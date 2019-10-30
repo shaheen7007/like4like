@@ -21,6 +21,7 @@ import com.shaheen.webviewtest.R;
 import com.shaheen.webviewtest.adapter.FaqAdapter;
 import com.shaheen.webviewtest.databaseRef.FAQRef;
 import com.shaheen.webviewtest.model.FAQ;
+import com.shaheen.webviewtest.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +47,10 @@ public class FAQActivity extends AppCompatActivity {
     }
 
     private void init() {
+
+        Utils.isInternetAvailable(FAQActivity.this);
+
+
 
         mAdView_banner = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();

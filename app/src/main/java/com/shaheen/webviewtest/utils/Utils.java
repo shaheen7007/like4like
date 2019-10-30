@@ -1,7 +1,12 @@
 package com.shaheen.webviewtest.utils;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.widget.Toast;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +21,21 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
         return sdf.format(d);
     }
+
+
+    public static boolean isInternetAvailable(Context context) {
+
+            ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+
+            if (!(connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected())){
+                Toast.makeText(context, "No internet connection available", Toast.LENGTH_SHORT).show();
+            }
+
+            return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+
+
+        }
+
 
 
 }

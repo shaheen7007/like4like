@@ -33,6 +33,7 @@ import com.shaheen.webviewtest.model.FbPage;
 import com.shaheen.webviewtest.model.UserProfile;
 import com.shaheen.webviewtest.utils.Consts;
 import com.shaheen.webviewtest.utils.PrefManager;
+import com.shaheen.webviewtest.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,7 +77,9 @@ public class MainListFragment extends Fragment {
 
     @Override
     public void onResume() {
-        getUserLikedPages();
+        if (Utils.isInternetAvailable(getActivity())) {
+            getUserLikedPages();
+        }
         super.onResume();
     }
 
@@ -201,15 +204,17 @@ return true;
             @Override
             public void onClick(View v) {
 
-                if (addOrEdit==Consts.EDIT) {
-                    bottomSheetEdit = BottomSheetEdit.newInstance();
-                    bottomSheetEdit.show(getActivity().getSupportFragmentManager(),
-                            "edit page");
-                }
-                else {
-                    bottomSheetAdd = BottomSheetAdd.newInstance();
-                    bottomSheetAdd.show(getActivity().getSupportFragmentManager(),
-                            "add page");
+                if (Utils.isInternetAvailable(getActivity())) {
+
+                    if (addOrEdit == Consts.EDIT) {
+                        bottomSheetEdit = BottomSheetEdit.newInstance();
+                        bottomSheetEdit.show(getActivity().getSupportFragmentManager(),
+                                "edit page");
+                    } else {
+                        bottomSheetAdd = BottomSheetAdd.newInstance();
+                        bottomSheetAdd.show(getActivity().getSupportFragmentManager(),
+                                "add page");
+                    }
                 }
             }
         });
@@ -227,28 +232,29 @@ return true;
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                if (Utils.isInternetAvailable(context)) {
 
-                prefManager.setCountForAd(prefManager.getCountForAd()+1);
-                if (prefManager.getCountForAd()%4==0){
+                    prefManager.setCountForAd(prefManager.getCountForAd() + 1);
+                    if (prefManager.getCountForAd() % 4 == 0) {
 
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            prefManager.setCountForAd(prefManager.getCountForAd() - 1);
+                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                        }
+
                     } else {
-                        prefManager.setCountForAd(prefManager.getCountForAd()-1);
-                        Log.d("TAG", "The interstitial wasn't loaded yet.");
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("page", fbPageList.get(position));
+                        fbPageFragment.setArguments(bundle);
+                        ft = fragmentManager.beginTransaction();
+                        ft.replace(R.id.container, fbPageFragment, "fbpage");
+                        ft.setTransition(
+                                FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                        ft.commit();
                     }
-
-                }
-                else {
-
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("page", fbPageList.get(position));
-                    fbPageFragment.setArguments(bundle);
-                    ft = fragmentManager.beginTransaction();
-                    ft.replace(R.id.container, fbPageFragment, "fbpage");
-                    ft.setTransition(
-                            FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                    ft.commit();
                 }
             }
 

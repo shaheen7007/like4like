@@ -2,6 +2,7 @@ package com.shaheen.webviewtest.activity;
 
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.ads.AdListener;
@@ -16,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -71,7 +73,6 @@ public class HomeActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,15 +81,17 @@ public class HomeActivity extends AppCompatActivity {
         init();
         // load mainList fragment
 
-        if (prefManager.getIsFirsttime()){
-            toolbar.setVisibility(View.GONE);
-            loadFragment(fbLoginFragment);
-        }
-        else {
+        Utils.isInternetAvailable(HomeActivity.this);
 
-            toolbar.setVisibility(View.VISIBLE);
-            loadFragment(mainListFragment);
-        }
+            if (prefManager.getIsFirsttime()) {
+                toolbar.setVisibility(View.GONE);
+                loadFragment(fbLoginFragment);
+            } else {
+
+                toolbar.setVisibility(View.VISIBLE);
+                loadFragment(mainListFragment);
+            }
+
     }
 
     @Override
@@ -132,10 +135,10 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         toolbar = findViewById(R.id.tb);
-        prefManager=PrefManager.getInstance(HomeActivity.this);
+        prefManager = PrefManager.getInstance(HomeActivity.this);
         context = this;
         mainListFragment = new MainListFragment();
-        fbLoginFragment=new FbLoginFragment();
+        fbLoginFragment = new FbLoginFragment();
         BTN_Nav = findViewById(R.id.nav_btn);
         changeNavButton(Consts.DRAWER);
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -392,13 +395,12 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public static void changeNavButton(int c){
+    public static void changeNavButton(int c) {
 
-        if (c==Consts.DRAWER){
+        if (c == Consts.DRAWER) {
             BTN_Nav.setImageResource(R.drawable.ic_menu_white_24dp);
             BTN_Nav.setVisibility(View.VISIBLE);
-        }
-        else if (c==Consts.BACK){
+        } else if (c == Consts.BACK) {
             BTN_Nav.setImageResource(R.drawable.ic_arrow_back_black_24dp);
             BTN_Nav.setVisibility(View.INVISIBLE);
         }
@@ -406,8 +408,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public static void showToolbar()
-    {
+    public static void showToolbar() {
         toolbar.setVisibility(View.VISIBLE);
     }
 }

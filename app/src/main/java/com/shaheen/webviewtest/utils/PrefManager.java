@@ -17,6 +17,7 @@ public class PrefManager {
     private static final String IS_FIRST_TIME = "is_first_time";
     private static final String POINT_PER_LIKE = "points_per_like";
     private static final String COUNT_FOR_AD = "count_for_ad";
+    private static final String DEVICE_TOKEN = "device_token";
 
 
     // ===========================================================
@@ -128,6 +129,13 @@ public class PrefManager {
 
     public void setCountForAd(int count){
         putInt(COUNT_FOR_AD,count);
+    }
+public String getDeviceToken(){
+        return prefs.getString(DEVICE_TOKEN, null);
+    }
+
+    public void setDeviceToken(String token){
+        putString(DEVICE_TOKEN,token);
     }
 
    }
