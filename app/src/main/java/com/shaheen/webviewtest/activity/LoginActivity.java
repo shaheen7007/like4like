@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
+        String email = _emailText.getText().toString().trim();
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own authentication logic here.
@@ -225,7 +225,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
+                // By default we just finish the HowItWorksActivity and log them in automatically
                 this.finish();
             }
         }
@@ -272,7 +272,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Facebook login session required:");
-        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like logging in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE\n\n* If you face any trouble logging in, click on 'having trouble?' button");
+        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like login in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE\n\n* If you face any trouble while login, click on 'having trouble?' button");
 
         alert.setCancelable(false);
         alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {

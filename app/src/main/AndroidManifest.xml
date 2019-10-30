@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.FAQActivity"></activity>
+        <activity android:name=".activity.HowItWorksActivity"></activity>
         <activity android:name=".activity.MyAccountActivity" />
         <activity android:name=".activity.EarnMorePointsActivity" />
         <activity android:name=".activity.SignupActivity" />

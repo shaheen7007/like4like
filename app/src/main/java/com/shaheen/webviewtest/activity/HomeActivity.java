@@ -1,6 +1,8 @@
 package com.shaheen.webviewtest.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -49,6 +51,7 @@ import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.FbPage;
 import com.shaheen.webviewtest.model.UserProfile;
+import com.shaheen.webviewtest.utils.HowItWorksDialog;
 import com.shaheen.webviewtest.utils.PrefManager;
 import com.shaheen.webviewtest.utils.Utils;
 
@@ -83,14 +86,22 @@ public class HomeActivity extends AppCompatActivity {
 
         Utils.isInternetAvailable(HomeActivity.this);
 
-            if (prefManager.getIsFirsttime()) {
-                toolbar.setVisibility(View.GONE);
-                loadFragment(fbLoginFragment);
-            } else {
+        if (prefManager.getIsFirsttime()) {
+            toolbar.setVisibility(View.GONE);
+            loadFragment(fbLoginFragment);
+        } else {
 
-                toolbar.setVisibility(View.VISIBLE);
-                loadFragment(mainListFragment);
+            toolbar.setVisibility(View.VISIBLE);
+            loadFragment(mainListFragment);
+
+            if (!prefManager.getHowItWorksFlag()){
+
+                mShowHowToLoginDialog();
+
             }
+
+
+        }
 
     }
 
@@ -201,9 +212,11 @@ public class HomeActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.account:
 
-                        dl.closeDrawer(Gravity.LEFT);
                         Intent intent = new Intent(HomeActivity.this, MyAccountActivity.class);
-                        startActivity(intent);
+                        if (Utils.isInternetAvailable(HomeActivity.this)) {
+                            dl.closeDrawer(Gravity.LEFT);
+                            startActivity(intent);
+                        }
                         break;
                     case R.id.transactions:
                         dl.closeDrawer(Gravity.LEFT);
@@ -217,7 +230,7 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case R.id.faq:
                         dl.closeDrawer(Gravity.LEFT);
-                        intent = new Intent(HomeActivity.this, FAQActivity.class);
+                        intent = new Intent(HomeActivity.this, HowItWorksActivity.class);
                         startActivity(intent);
                         break;
                     default:
@@ -411,4 +424,16 @@ public class HomeActivity extends AppCompatActivity {
     public static void showToolbar() {
         toolbar.setVisibility(View.VISIBLE);
     }
+
+
+
+    private void mShowHowToLoginDialog() {
+
+        HowItWorksDialog alert = new HowItWorksDialog();
+        alert.showDialog(HomeActivity.this);
+
+
+    }
+
+
 }

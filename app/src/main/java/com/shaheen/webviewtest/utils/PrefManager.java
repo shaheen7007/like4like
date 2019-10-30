@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.Date;
+import java.util.logging.Handler;
 
 public class PrefManager {
     // ===========================================================
@@ -18,6 +19,7 @@ public class PrefManager {
     private static final String POINT_PER_LIKE = "points_per_like";
     private static final String COUNT_FOR_AD = "count_for_ad";
     private static final String DEVICE_TOKEN = "device_token";
+    private static final String HOW_IT_WORKS_FLAG = "how_it_works_flag";
 
 
     // ===========================================================
@@ -98,6 +100,15 @@ public class PrefManager {
 
     public void setIsPageListed(boolean status){
         putBoolean(IS_PAGE_LISTED,status);
+    }
+
+
+ public boolean getHowItWorksFlag(){
+        return prefs.getBoolean(HOW_IT_WORKS_FLAG, false);
+    }
+
+    public void setHowItWorksFlag(boolean status){
+        putBoolean(HOW_IT_WORKS_FLAG,status);
     }
 
   public boolean getIsFirsttime(){

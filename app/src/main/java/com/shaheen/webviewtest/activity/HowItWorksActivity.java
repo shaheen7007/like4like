@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FAQActivity extends AppCompatActivity {
+public class HowItWorksActivity extends AppCompatActivity {
 
     RecyclerView RV_faq;
     List<FAQ> list;
@@ -48,7 +48,7 @@ public class FAQActivity extends AppCompatActivity {
 
     private void init() {
 
-        Utils.isInternetAvailable(FAQActivity.this);
+        Utils.isInternetAvailable(HowItWorksActivity.this);
 
 
 
@@ -63,7 +63,7 @@ public class FAQActivity extends AppCompatActivity {
         BTN_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FAQActivity.super.onBackPressed();
+                HowItWorksActivity.super.onBackPressed();
             }
         });
 
@@ -91,7 +91,7 @@ public class FAQActivity extends AppCompatActivity {
     private void mGetFAQ(String uid) {
 
         showProgressDialog();
-        FAQRef.getInstance(FAQActivity.this, uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        FAQRef.getInstance(HowItWorksActivity.this, uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 list.clear();

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:padding="5dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_title"
+        android:text="How it works ?"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_margin="10dp"
+        />
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/lyt_msg"
+        android:layout_below="@+id/tv_title"
+        android:layout_above="@+id/lyt"
+        >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_msg"
+        android:layout_marginTop="15sp"
+        android:text="- You get 50 points when you Sign up.\n\n
+- You get points for liking other user's facebook page\n\n
+- You can give your points to other users for them liking your page\n\n
+- You can decide how much points(10/15/20/25pts) to be given to another user for liking your page\n\n
+- Pages of users who give more amount of points will be listed at the top of the list\n\n
+- You are more likely to get more number of likes if you set maximum points(25pts) for liking your page\n\n
+- When you like another user's page you get points and when other user likes your page your points reduces(other user gets that point)\n\n
+- Through this way, these points are circulated among users and in effect every user get likes for their page\n\n
+- You will stop getting likes when your points are exhausted. Earn more and more points to continue getting more and more likes to your page\n
+"/>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:id="@+id/lyt"
+        android:layout_height="wrap_content">
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="0dp"
+        android:id="@+id/chk"
+        android:layout_weight="1.5"
+        android:layout_alignParentStart="true"
+        android:layout_height="wrap_content"
+        android:text="Don't show this again"/>
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+           android:gravity="end"
+            android:layout_marginEnd="5dp"
+            android:id="@+id/close"
+            android:textStyle="bold"
+            android:layout_alignParentEnd="true"
+            android:text="Close"
+            android:textColor="@color/colorPrimary"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

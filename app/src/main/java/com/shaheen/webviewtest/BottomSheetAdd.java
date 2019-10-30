@@ -95,7 +95,7 @@ public class BottomSheetAdd extends BottomSheetDialogFragment implements View.On
         //Log.e("val", "requestCode ->  " + requestCode+"  resultCode "+resultCode);
        /* switch (requestCode) {
             case (100): {
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == HowItWorksActivity.RESULT_OK) {
                     returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
 
                     mShowImage(returnValue.get(0));

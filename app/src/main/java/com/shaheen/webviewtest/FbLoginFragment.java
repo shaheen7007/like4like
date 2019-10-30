@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -85,6 +86,16 @@ public class FbLoginFragment extends Fragment {
         });
 
 
+
+
+/*
+
+        getActivity().getWindow().requestFeature(Window.FEATURE_PROGRESS);
+        getActivity().setContentView(R.layout.fragment_fblogin);
+        getActivity().getWindow().setFeatureInt( Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
+
+*/
+
         webview.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, final String url) {
@@ -112,6 +123,16 @@ public class FbLoginFragment extends Fragment {
 
                             }
                         });
+            }
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+
+                if (!progressBar.isShowing()) {
+                    progressBar.show();
+                }
+
+                return true;
             }
         });
 

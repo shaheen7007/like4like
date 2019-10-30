@@ -210,7 +210,7 @@ public class SignupActivity extends AppCompatActivity {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Facebook login session required:");
-        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like logging in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE\n\n* If you face any trouble logging in, click on 'having trouble?' button");
+        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like login in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE\n\n* If you face any trouble while login, click on 'having trouble?' button");
 
         alert.setCancelable(false);
         alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
