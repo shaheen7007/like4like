@@ -29,11 +29,10 @@ import java.util.List;
 
 public class HowItWorksActivity extends AppCompatActivity {
 
-    RecyclerView RV_faq;
-    List<FAQ> list;
+  //  RecyclerView RV_faq;
+  //  List<FAQ> list;
     Runnable r;
-    FirebaseUser user;
-    FaqAdapter faqAdapter;
+  //  FaqAdapter faqAdapter;
     ProgressDialog dialog;
     ImageView BTN_back;
     AdView mAdView_banner;
@@ -57,7 +56,7 @@ public class HowItWorksActivity extends AppCompatActivity {
         mAdView_banner.loadAd(adRequest);
 
 
-        RV_faq = (RecyclerView) findViewById(R.id.list_faq);
+      //  RV_faq = (RecyclerView) findViewById(R.id.list_faq);
         BTN_back = findViewById(R.id.nav_btn);
 
         BTN_back.setOnClickListener(new View.OnClickListener() {
@@ -70,28 +69,23 @@ public class HowItWorksActivity extends AppCompatActivity {
 
         dialog = new ProgressDialog(this);
 
-        list = new ArrayList<>();
+       /* list = new ArrayList<>();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         RV_faq.setLayoutManager(mLayoutManager);
         RV_faq.setLayoutManager(mLayoutManager);
         faqAdapter = new FaqAdapter(getApplicationContext(), list);
-        RV_faq.setAdapter(faqAdapter);
-
-        final Handler handler = new Handler();
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        RV_faq.setAdapter(faqAdapter);*/
 
 
-        mGetFAQ(user.getUid());
-
+        mGetFAQ();
 
     }
 
 
-    private void mGetFAQ(String uid) {
+    private void mGetFAQ() {
 
-        showProgressDialog();
-        FAQRef.getInstance(HowItWorksActivity.this, uid).addListenerForSingleValueEvent(new ValueEventListener() {
+       /* showProgressDialog();
+        FAQRef.getInstance(HowItWorksActivity.this).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 list.clear();
@@ -113,6 +107,13 @@ public class HowItWorksActivity extends AppCompatActivity {
 
             }
         });
+*/
+
+
+      /*  list.add(faq);
+
+        faqAdapter.notifyDataSetChanged();*/
+
 
     }
 

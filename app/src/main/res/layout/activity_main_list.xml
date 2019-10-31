@@ -20,18 +20,24 @@
 
 
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipe_refresh"
+        android:layout_above="@+id/btn_list_page"
+        android:layout_below="@+id/adView">
     <co.ceryle.fitgridview.FitGridView
         android:id="@+id/gridView"
         android:layout_margin="5dp"
-        android:layout_below="@+id/adView"
         android:layout_width="match_parent"
-        android:layout_above="@+id/btn_list_page"
         android:layout_height="match_parent"
         android:horizontalSpacing="5dp"
         android:verticalSpacing="5dp"
         android:listSelector="@android:color/transparent"
         app:column="3"
         app:row="4"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 
     <Button

@@ -7,7 +7,7 @@ import com.shaheen.webviewtest.utils.Consts;
 
 
 public class FAQRef {
-    public static DatabaseReference getInstance(Context context, String uid) {
-        return UsersRef.getInstance(context).child(uid).child(Consts.FAQ).getRef();
+    public static DatabaseReference getInstance(Context context) {
+        return MainRef.getInstance(context).child(Consts.FAQ).getRef();
     }
 }

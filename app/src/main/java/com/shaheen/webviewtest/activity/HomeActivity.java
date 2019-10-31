@@ -19,6 +19,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.FbLoginFragment;
 import com.shaheen.webviewtest.databaseRef.TransactionsRef;
@@ -94,11 +97,7 @@ public class HomeActivity extends AppCompatActivity {
             toolbar.setVisibility(View.VISIBLE);
             loadFragment(mainListFragment);
 
-            if (!prefManager.getHowItWorksFlag()){
 
-                mShowHowToLoginDialog();
-
-            }
 
 
         }
@@ -128,7 +127,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
-
 
         //change ad unit id
         mInterstitialAd = new InterstitialAd(this);
@@ -242,6 +240,28 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
+
+        AppRate.with(this)
+                .setInstallDays(0) // default 10, 0 means install day.
+                .setLaunchTimes(3) // default 10
+                .setRemindInterval(2) // default 1
+                .setTitle("Get 50 Points Now!")
+                .setMessage("Give 5 stars rating and get 50 reward points")
+                .setShowLaterButton(true) // default true
+                .setDebug(false) // default false
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        EarnMorePointsActivity.updatePoint(50,"You gave 5 stars rating",userID);
+                    }
+                })
+                .monitor();
+
+        // Show a dialog if meets conditions
+        AppRate.showRateDialogIfMeetsConditions(this);
+
+
+
     }
 
     @Override

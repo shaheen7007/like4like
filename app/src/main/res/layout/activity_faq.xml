@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
     tools:context=".activity.MyAccountActivity">
 
@@ -11,6 +10,7 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:id="@+id/tb"
+        android:layout_marginBottom="10dp"
         android:background="@color/colorPrimary"
         android:layout_height="56dp">
 
@@ -44,7 +44,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Frequently Asked Questions"
+                android:text="How it works ?"
                 android:layout_marginStart="20dp"
                 android:gravity="center"
                 android:textStyle="bold"
@@ -72,13 +72,39 @@
         ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
     </com.google.android.gms.ads.AdView>
 
-    <androidx.recyclerview.widget.RecyclerView
+<!--    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_above="@+id/adView"
         android:layout_marginTop="4dp"
         android:layout_below="@+id/tb"
         android:id="@+id/list_faq"
+        android:layout_height="match_parent"/>-->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_above="@+id/adView"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/tb"
+        android:fillViewport="true"
+        android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:textColor="#000"
+        android:layout_marginTop="4dp"
+        android:text="- You get 50 points when you Sign up.\n\n
+- You get points for liking other user's facebook page\n\n
+- You can give your points to other users for them liking your page\n\n
+- You can decide how much points(10/15/20/25pts) to be given to another user for liking your page\n\n
+- Pages of users who give more amount of points will be listed at the top of the list\n\n
+- You are more likely to get more number of likes if you set maximum points(25pts) for liking your page\n\n
+- When you like another user's page you get points and when other user likes your page your points reduces(other user gets that point)\n\n
+- Through this way, these points are circulated among users and in effect every user get likes for their page\n\n
+- You will stop getting likes when your points are exhausted. Earn more and more points to continue getting more and more likes to your page\n
+"
+        android:id="@+id/list_faq"
         android:layout_height="match_parent"/>
+    </ScrollView>
 
 
 

@@ -128,8 +128,7 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                         public void onUserEarnedReward(@NonNull RewardItem reward) {
 
                             loadRewardedVideo();
-                            updatePoint(20);
-                            Toast.makeText(EarnMorePointsActivity.this, "You earned "+20+" reward points", Toast.LENGTH_SHORT).show();
+                            updatePoint(20,"You watched a video Ad",userID);
 
 
                         }
@@ -230,9 +229,9 @@ public class EarnMorePointsActivity extends AppCompatActivity {
         TV_points.startAnimation(rotation);
     }
 
-    public static void updatePoint(final int points) {
+    public static void updatePoint(final int points, final String msg, final String user_ID) {
 
-            UsersRef.getUserByUserId(context, userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            UsersRef.getUserByUserId(context, user_ID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
@@ -242,7 +241,7 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                         int currentPoints = userProfile.getTotalPoints();
                         int newPoints = currentPoints +points;
 
-                        mUpdatePointsInFirebase(userID, newPoints);
+                        mUpdatePointsInFirebase(user_ID, newPoints);
 
                         Transaction transaction = new Transaction();
                         transaction.setBalance(newPoints);
@@ -250,9 +249,10 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                         transaction.setPlusOrMinus(Consts.PLUS);
                         transaction.setPoints(points);
                         transaction.setType(Consts.TRANSACTION_AD_WATCH);
-                        transaction.setMsg("You watched a video Ad");
+                        transaction.setMsg(msg);
 
-                        mAddTransaction(userID, transaction);
+                        mAddTransaction(user_ID, transaction);
+                        Toast.makeText(context, "You earned "+points+" reward points", Toast.LENGTH_SHORT).show();
 
 
                     } else {

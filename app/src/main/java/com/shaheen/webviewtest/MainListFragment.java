@@ -32,6 +32,7 @@ import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.FbPage;
 import com.shaheen.webviewtest.model.UserProfile;
 import com.shaheen.webviewtest.utils.Consts;
+import com.shaheen.webviewtest.utils.HowItWorksDialog;
 import com.shaheen.webviewtest.utils.PrefManager;
 import com.shaheen.webviewtest.utils.Utils;
 
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import co.ceryle.fitgridview.FitGridView;
 
 
@@ -61,6 +63,7 @@ public class MainListFragment extends Fragment {
     int addOrEdit=Consts.ADD;
     AdView mAdView_banner;
     private static InterstitialAd mInterstitialAd;
+    private static SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -164,6 +167,7 @@ return true;
         //change ad unit id - in layout
 
 
+
         //change ad unit id
         mInterstitialAd = new InterstitialAd(getActivity());
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
@@ -189,11 +193,36 @@ return true;
         HomeActivity.changeNavButton(Consts.DRAWER);
 
         context = getActivity();
+
+
         prefManager = PrefManager.getInstance(context);
+
+        if (!prefManager.getHowItWorksFlag()){
+
+            mShowHowToLoginDialog();
+
+        }
+
         fragmentManager = getFragmentManager();
         gridView = view.findViewById(R.id.gridView);
         BTN_listMyPage = view.findViewById(R.id.btn_list_page);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utils.isInternetAvailable(getActivity())) {
+                    getUserLikedPages();
+                }
+                else {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
+
         user = FirebaseAuth.getInstance().getCurrentUser();
+
 
         progressBar = new ProgressDialog(getActivity());
         progressBar.setMessage("Loading");
@@ -262,6 +291,9 @@ return true;
 
 
         progressBar.dismiss();
+        if(swipeRefreshLayout.isRefreshing()){
+            swipeRefreshLayout.setRefreshing(false);
+        }
 
     }
 
@@ -290,6 +322,7 @@ return true;
 
             }
         });
+
 
 
 
@@ -340,6 +373,15 @@ return true;
 
     }
 
+
+
+    private void mShowHowToLoginDialog() {
+
+        HowItWorksDialog alert = new HowItWorksDialog();
+        alert.showDialog(getActivity());
+
+
+    }
 
 
 }
