@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +38,8 @@ public class HowItWorksActivity extends AppCompatActivity {
     ProgressDialog dialog;
     ImageView BTN_back;
     AdView mAdView_banner;
+    private InterstitialAd mInterstitialAd;
+    private boolean adShown = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,36 @@ public class HowItWorksActivity extends AppCompatActivity {
         mAdView_banner.loadAd(adRequest);
 
 
-      //  RV_faq = (RecyclerView) findViewById(R.id.list_faq);
+
+        //change ad unit id
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if (!adShown) {
+                    adShown=true;
+                    mInterstitialAd.show();
+                }
+            }
+        });
+
+
+
+
+
+
+        //  RV_faq = (RecyclerView) findViewById(R.id.list_faq);
         BTN_back = findViewById(R.id.nav_btn);
 
         BTN_back.setOnClickListener(new View.OnClickListener() {

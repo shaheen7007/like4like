@@ -16,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
@@ -45,8 +47,11 @@ public class EarnMorePointsActivity extends AppCompatActivity {
     static ImageView BTN_Nav;
     PrefManager prefManager;
     Button BTN_watchVideo;
+    Button BTN_spin;
     private RewardedAd rewardedAd;
     AdView mAdView_banner;
+    private InterstitialAd mInterstitialAd;
+    private boolean adShown = false;
 
 
     @Override
@@ -63,12 +68,44 @@ public class EarnMorePointsActivity extends AppCompatActivity {
         Utils.isInternetAvailable(EarnMorePointsActivity.this);
 
         mAdView_banner = findViewById(R.id.adView);
+        BTN_spin = findViewById(R.id.btn_spin);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView_banner.loadAd(adRequest);
 
 
         rewardedAd = new RewardedAd(this,
                 "ca-app-pub-3940256099942544/5224354917"); //change ad unit id
+
+
+
+
+        //change ad unit id
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if (!adShown) {
+                    adShown=true;
+                    mInterstitialAd.show();
+                }
+            }
+        });
+
+
+
+
+
 
 
 
@@ -103,6 +140,19 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                 EarnMorePointsActivity.super.onBackPressed();
             }
         });
+
+
+
+        BTN_spin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utils.isInternetAvailable(EarnMorePointsActivity.this)) {
+                    Intent intent = new Intent(EarnMorePointsActivity.this, SpinAndWinActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+
 
 
 

@@ -56,7 +56,7 @@ public class BottomSheetEdit extends BottomSheetDialogFragment implements View.O
     private boolean isPointSet= false;
     private int selected_point = 0;
     FirebaseUser user;
-    final CharSequence items[] = new CharSequence[]{"10 Pts", "15 Pts", "20 Pts", "25 Pts"};
+    final CharSequence items[] = new CharSequence[]{"25 Pts", "30 Pts", "40 Pts", "60 Pts"};
 
     public static BottomSheetEdit newInstance() {
         return new BottomSheetEdit();

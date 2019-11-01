@@ -97,9 +97,6 @@ public class HomeActivity extends AppCompatActivity {
             toolbar.setVisibility(View.VISIBLE);
             loadFragment(mainListFragment);
 
-
-
-
         }
 
     }
@@ -200,11 +197,11 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                if (mInterstitialAd.isLoaded()) {
+               /* if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 } else {
                     Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
+                }*/
 
                 int id = item.getItemId();
                 switch (id) {

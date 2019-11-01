@@ -3,11 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.shaheen.webviewtest">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,36 +11,36 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activity.HowItWorksActivity"></activity>
+        <activity android:name=".activity.SpinAndWinActivity"></activity>
+        <activity android:name=".activity.HowItWorksActivity" />
         <activity android:name=".activity.MyAccountActivity" />
         <activity android:name=".activity.EarnMorePointsActivity" />
         <activity android:name=".activity.SignupActivity" />
-        <activity android:name=".activity.LoginActivity" >
+        <activity android:name=".activity.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
-
-        <activity android:name=".activity.HomeActivity">
-        </activity>
+        <activity android:name=".activity.HomeActivity"></activity>
         <activity android:name=".activity.TransactionsActivity" />
         <activity android:name=".MainListFragment" />
         <activity android:name=".FbPageFragment" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2416033626083993~8380159490" />
+
         <service android:name=".firebase.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2416033626083993~8380159490"/>
-
     </application>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

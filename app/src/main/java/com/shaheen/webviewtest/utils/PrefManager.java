@@ -14,6 +14,7 @@ public class PrefManager {
 
     private static final String TAG_NAME = "chronology.prefs";
     private static final String LISTED_PAGE_ID = "listed_page_id";
+    private static final String LAST_SPIN_TIME = "last_spin_time";
     private static final String IS_PAGE_LISTED = "is_page_listed";
     private static final String IS_FIRST_TIME = "is_first_time";
     private static final String POINT_PER_LIKE = "points_per_like";
@@ -140,6 +141,14 @@ public class PrefManager {
 
     public void setCountForAd(int count){
         putInt(COUNT_FOR_AD,count);
+    }
+
+    public long getLastSpinTime(){
+        return prefs.getLong(LAST_SPIN_TIME, 0);
+    }
+
+    public void setLastSpinTime(long timestamp){
+        putLong(LAST_SPIN_TIME,timestamp);
     }
 public String getDeviceToken(){
         return prefs.getString(DEVICE_TOKEN, null);

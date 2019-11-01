@@ -49,7 +49,6 @@ public class MainListFragment extends Fragment {
     static List<FbPage> fbPageList;
     static FitGridView gridView;
     static PrefManager prefManager;
-
     static FbPageFragment fbPageFragment;
     static ArrayList<String> userLikedPages;
     static FragmentTransaction ft;

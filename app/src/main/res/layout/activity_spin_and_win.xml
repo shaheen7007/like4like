@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.SpinAndWinActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:id="@+id/tb"
+        android:background="@color/colorPrimary"
+        android:layout_height="56dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:id="@+id/tv_pts"
+                android:visibility="gone"
+                android:padding="5dp"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:textColor="#fff"
+                android:textSize="16sp"/>
+
+
+            <ImageView
+                android:id="@+id/nav_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_arrow_back_black_24dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Spin And Win"
+                android:layout_marginStart="20dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_toEndOf="@+id/nav_btn"
+                android:textColor="#fff"
+                android:textSize="16sp"
+                />
+
+        </RelativeLayout>
+
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+    </com.google.android.gms.ads.AdView>
+
+
+    <rubikstudio.library.LuckyWheelView
+
+        app:lkwBackgroundColor="#FF9800"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/tb"
+        app:lkwTopTextColor="#263238"
+        app:lkwCenterImage="@drawable/wheel"
+        android:focusable="false"
+        android:clickable="false"
+        app:lkwCursor="@drawable/ic_cursor"
+        android:id="@+id/luckyWheel"
+        android:layout_width="300dp"
+        android:layout_height="300dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Spin"
+        android:id="@+id/spin"
+        android:textColor="#fff"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@color/colorPrimaryDark"
+        android:layout_below="@+id/luckyWheel"
+        android:layout_marginTop="25dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:text="Watch video Ad: Get 1 spin"
+        android:id="@+id/btn_watchVideo"
+        android:textColor="#fff"
+        android:background="@color/colorPrimaryDark"
+        android:layout_below="@+id/spin"
+        android:layout_marginTop="25dp"/>
+
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

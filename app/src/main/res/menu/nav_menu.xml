@@ -12,7 +12,7 @@
         android:title="Earn More Points"/>
 
     <item android:id="@+id/faq"
-        android:icon="@drawable/ic_question_answer_black_24dp"
-        android:title="FAQ"/>
+        android:icon="@drawable/ic_question"
+        android:title="How It Works ?"/>
 
 </menu>

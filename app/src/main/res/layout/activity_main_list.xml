@@ -24,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/swipe_refresh"
+        android:layout_marginTop="10dp"
         android:layout_above="@+id/btn_list_page"
         android:layout_below="@+id/adView">
     <co.ceryle.fitgridview.FitGridView
