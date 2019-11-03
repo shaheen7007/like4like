@@ -57,6 +57,19 @@
     </androidx.appcompat.widget.Toolbar>
 
 
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tb"
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+    </com.google.android.gms.ads.AdView>
+
+
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
@@ -74,7 +87,7 @@
         app:lkwBackgroundColor="#FF9800"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_below="@+id/tb"
+        android:layout_below="@+id/adView1"
         app:lkwTopTextColor="#263238"
         app:lkwCenterImage="@drawable/wheel"
         android:focusable="false"
@@ -90,6 +103,7 @@
         android:text="Spin"
         android:id="@+id/spin"
         android:textColor="#fff"
+        android:textAllCaps="false"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:background="@color/colorPrimaryDark"
@@ -99,6 +113,7 @@
     <Button
         android:layout_width="match_parent"
         android:visibility="gone"
+        android:textAllCaps="false"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"

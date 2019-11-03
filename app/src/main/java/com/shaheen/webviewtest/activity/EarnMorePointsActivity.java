@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -118,7 +117,7 @@ public class EarnMorePointsActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             userID = user.getUid();
-            getCurrentPointsAndSetInTextView(userID);
+            getCurrentPointsAndSetInTextView(userID, EarnMorePointsActivity.this, true);
         } else {
             mRedirectToLoginPage();
         }
@@ -128,7 +127,7 @@ public class EarnMorePointsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                animatePointsText();
+                animatePointsText(EarnMorePointsActivity.this);
 
             }
         });
@@ -178,7 +177,7 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                         public void onUserEarnedReward(@NonNull RewardItem reward) {
 
                             loadRewardedVideo();
-                            updatePoint(20,"You watched a video Ad",userID);
+                            updatePoint(20,"You watched a video Ad",userID,EarnMorePointsActivity.this,true);
 
 
                         }
@@ -272,14 +271,14 @@ public class EarnMorePointsActivity extends AppCompatActivity {
 
     }
 
-    private static void animatePointsText() {
+    private static void animatePointsText(Context context) {
         Animation rotation = AnimationUtils.loadAnimation(context, R.anim.anim);
         rotation.setRepeatCount(1);
 
         TV_points.startAnimation(rotation);
     }
 
-    public static void updatePoint(final int points, final String msg, final String user_ID) {
+    public static void updatePoint(final int points, final String msg, final String user_ID, final Context c, final boolean animate) {
 
             UsersRef.getUserByUserId(context, user_ID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -291,7 +290,7 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                         int currentPoints = userProfile.getTotalPoints();
                         int newPoints = currentPoints +points;
 
-                        mUpdatePointsInFirebase(user_ID, newPoints);
+                        mUpdatePointsInFirebase(user_ID, newPoints,c,animate);
 
                         Transaction transaction = new Transaction();
                         transaction.setBalance(newPoints);
@@ -302,11 +301,11 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                         transaction.setMsg(msg);
 
                         mAddTransaction(user_ID, transaction);
-                        Toast.makeText(context, "You earned "+points+" reward points", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(c, "You earned "+points+" reward points", Toast.LENGTH_SHORT).show();
 
 
                     } else {
-                        Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(c, "Something went wrong", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -324,11 +323,11 @@ public class EarnMorePointsActivity extends AppCompatActivity {
     }
 
 
-    public static void getCurrentPointsAndSetInTextView(String userID) {
+    public static void getCurrentPointsAndSetInTextView(String userID, final Context c, final boolean animate) {
 
         Log.d("userID", userID);
 
-        UsersRef.getUserByUserId(context, userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        UsersRef.getUserByUserId(c, userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -337,14 +336,15 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                     UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
                     int currentPoints = userProfile.getTotalPoints();
 
-                    animatePointsText();
-                    TV_points.setText(currentPoints + " Pts");
-
+                    if (animate) {
+                        animatePointsText(c);
+                        TV_points.setText(currentPoints + " Pts");
+                    }
 
                     //   }
 
                 } else {
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(c, "Something went wrong", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -356,11 +356,11 @@ public class EarnMorePointsActivity extends AppCompatActivity {
         });
     }
 
-    private static void mUpdatePointsInFirebase(String userID, int newPoints) {
+    private static void mUpdatePointsInFirebase(String userID, int newPoints, Context c, boolean animate) {
 
-        UsersRef.getUserByUserId(context, userID).getRef().child(Consts.F_TOTAL_POINTS).setValue(newPoints);
+        UsersRef.getUserByUserId(c, userID).getRef().child(Consts.F_TOTAL_POINTS).setValue(newPoints);
 
-        getCurrentPointsAndSetInTextView(userID);
+        getCurrentPointsAndSetInTextView(userID,c,animate);
 
     }
 

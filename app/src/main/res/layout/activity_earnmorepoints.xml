@@ -101,7 +101,7 @@
             android:textColor="#ffff"
             android:textAllCaps="false"
             android:layout_marginTop="10dp"
-            android:text="Spin and win up to 500 Pts"
+            android:text="Spin and win up to 750 Pts"
             android:layout_below="@+id/tb"
             android:id="@+id/btn_spin"/>
     </LinearLayout>

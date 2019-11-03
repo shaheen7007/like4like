@@ -59,6 +59,7 @@ public class MainListFragment extends Fragment {
     BottomSheetEdit bottomSheetEdit;
     static Context context;
     static FragmentManager fragmentManager;
+    static boolean dialogFlag = false;
     int addOrEdit=Consts.ADD;
     AdView mAdView_banner;
     private static InterstitialAd mInterstitialAd;
@@ -196,11 +197,11 @@ return true;
 
         prefManager = PrefManager.getInstance(context);
 
-        if (!prefManager.getHowItWorksFlag()){
+       /* if (!prefManager.getHowItWorksFlag()){
 
             mShowHowToLoginDialog();
 
-        }
+        }*/
 
         fragmentManager = getFragmentManager();
         gridView = view.findViewById(R.id.gridView);
@@ -294,6 +295,17 @@ return true;
             swipeRefreshLayout.setRefreshing(false);
         }
 
+
+        if (!prefManager.getHowItWorksFlag()){
+
+            if (!dialogFlag){
+                dialogFlag=true;
+                mShowHowToLoginDialog();
+            }
+
+        }
+
+
     }
 
     private static void getPagesList() {
@@ -309,6 +321,9 @@ return true;
 
                     if (!userLikedPages.contains(fbPage.getPageID()) && !(fbPage.getUserTotalPoints() < fbPage.getPoints())) {
                         fbPageList.add(fbPage);
+                    }
+                    if (fbPageList.size()==40){
+                        break;
                     }
                 }
 
@@ -374,10 +389,10 @@ return true;
 
 
 
-    private void mShowHowToLoginDialog() {
+    private static void mShowHowToLoginDialog() {
 
         HowItWorksDialog alert = new HowItWorksDialog();
-        alert.showDialog(getActivity());
+        alert.showDialog(context);
 
 
     }

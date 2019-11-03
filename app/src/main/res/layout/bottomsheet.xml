@@ -61,7 +61,7 @@
             android:textStyle="bold"
             android:textColor="#fff"
             android:id="@+id/submit"
-            android:background="#D11C1C"
+            android:background="@color/colorPrimaryDark"
             android:layout_height="wrap_content" />
 
 

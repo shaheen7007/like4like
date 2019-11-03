@@ -240,8 +240,8 @@ public class HomeActivity extends AppCompatActivity {
 
         AppRate.with(this)
                 .setInstallDays(0) // default 10, 0 means install day.
-                .setLaunchTimes(3) // default 10
-                .setRemindInterval(2) // default 1
+                .setLaunchTimes(2) // default 10
+                .setRemindInterval(1) // default 1
                 .setTitle("Get 50 Points Now!")
                 .setMessage("Give 5 stars rating and get 50 reward points")
                 .setShowLaterButton(true) // default true
@@ -249,7 +249,9 @@ public class HomeActivity extends AppCompatActivity {
                 .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
                     @Override
                     public void onClickButton(int which) {
-                        EarnMorePointsActivity.updatePoint(50,"You gave 5 stars rating",userID);
+                        if (which==-1) {
+                            EarnMorePointsActivity.updatePoint(50, "You gave 5 stars rating", userID,HomeActivity.this,false);
+                        }
                     }
                 })
                 .monitor();

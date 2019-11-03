@@ -6,7 +6,7 @@
         android:title="My Account"/>
     <item android:id="@+id/transactions"
         android:icon="@drawable/ic_transfer_within_a_station_black_24dp"
-        android:title="My Transactions"/>
+        android:title="Recent Transactions"/>
     <item android:id="@+id/earn_more"
         android:icon="@drawable/ic_rich"
         android:title="Earn More Points"/>

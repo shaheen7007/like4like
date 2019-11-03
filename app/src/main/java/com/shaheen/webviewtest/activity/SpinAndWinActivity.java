@@ -4,36 +4,25 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import rubikstudio.library.LuckyWheelView;
 import rubikstudio.library.model.LuckyItem;
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.R;
-import com.shaheen.webviewtest.databaseRef.UsersRef;
-import com.shaheen.webviewtest.model.UserProfile;
 import com.shaheen.webviewtest.utils.PrefManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -48,13 +37,17 @@ public class SpinAndWinActivity extends AppCompatActivity {
     ImageView BTN_Nav;
     private RewardedAd rewardedAd;
     AdView mAdView_banner;
-
+    private InterstitialAd mInterstitialAd;
+    AdView mAdView_banner2;
+    Random rnd;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spin_and_win);
+
+        rnd = new Random();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         BTN_Nav = findViewById(R.id.nav_btn);
@@ -66,6 +59,23 @@ public class SpinAndWinActivity extends AppCompatActivity {
 
         loadRewardedVideo();
 
+
+        //change ad unit id
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+        mInterstitialAd.setAdListener(new AdListener() {
+                                          @Override
+                                          public void onAdClosed() {
+                                              // Load the next interstitial.
+                                              mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                                          }
+                                      });
+
+
+
         BTN_Nav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,9 +85,12 @@ public class SpinAndWinActivity extends AppCompatActivity {
         });
 
         mAdView_banner = findViewById(R.id.adView);
+        mAdView_banner2 = findViewById(R.id.adView1);
         BTN_spin = findViewById(R.id.btn_spin);
         AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest1 = new AdRequest.Builder().build();
         mAdView_banner.loadAd(adRequest);
+        mAdView_banner2.loadAd(adRequest1);
 
 
 
@@ -105,15 +118,19 @@ public class SpinAndWinActivity extends AppCompatActivity {
                 BTN_spin.setEnabled(false);
 
 
+
+                int[] ex = { 2, 4 };
+                int randomNum = getRandomWithExclusion(rnd, 0, 9, ex);
+
                 if (prefManager.getLastSpinTime() == 0) {
-                    luckyWheelView.startLuckyWheelWithTargetIndex(new Random().nextInt(7));
+                    luckyWheelView.startLuckyWheelWithTargetIndex(randomNum);
                     // luckyWheelView.startLuckyWheelWithTargetIndex(2);
                     prefManager.setLastSpinTime(System.currentTimeMillis());
                 } else if (DateUtils.isToday(prefManager.getLastSpinTime())) {
                     BTN_spin.setEnabled(true);
                     Toast.makeText(SpinAndWinActivity.this, "No spins left. Everyday you get 1 free spin", Toast.LENGTH_SHORT).show();
                 } else {
-                    luckyWheelView.startLuckyWheelWithTargetIndex(new Random().nextInt(7));
+                    luckyWheelView.startLuckyWheelWithTargetIndex(randomNum);
                     // luckyWheelView.startLuckyWheelWithTargetIndex(2);
                     prefManager.setLastSpinTime(System.currentTimeMillis());
                 }
@@ -134,6 +151,11 @@ public class SpinAndWinActivity extends AppCompatActivity {
 
                         @Override
                         public void onRewardedAdClosed() {
+
+                            if (mInterstitialAd.isLoaded()){
+                                mInterstitialAd.show();
+                            }
+
 
                         }
 
@@ -169,7 +191,7 @@ public class SpinAndWinActivity extends AppCompatActivity {
             @Override
             public void LuckyRoundItemSelected(int index) {
 
-                if (index == 2) {
+                if (index == 8) {
                     prefManager.setLastSpinTime(0);
                     Toast.makeText(SpinAndWinActivity.this, data.get(index).topText, Toast.LENGTH_SHORT).show();
                 }
@@ -177,32 +199,30 @@ public class SpinAndWinActivity extends AppCompatActivity {
 
                     switch (index){
                         case 0:
-                            EarnMorePointsActivity.updatePoint(10,"Daily lucky wheel spin",user.getUid());
+                            EarnMorePointsActivity.updatePoint(5,"Daily lucky wheel spin",user.getUid(),SpinAndWinActivity.this,true);
                             break;
 
                             case 1:
-                            EarnMorePointsActivity.updatePoint(20,"Daily lucky wheel spin",user.getUid());
+                            EarnMorePointsActivity.updatePoint(10,"Daily lucky wheel spin",user.getUid(),SpinAndWinActivity.this,true);
                             break;
 
                             case 3:
-                            EarnMorePointsActivity.updatePoint(25,"Daily lucky wheel spin",user.getUid());
-                            break;
-
-                            case 4:
-                            EarnMorePointsActivity.updatePoint(50,"Daily lucky wheel spin",user.getUid());
+                            EarnMorePointsActivity.updatePoint(15,"Daily lucky wheel spin",user.getUid(),SpinAndWinActivity.this,true);
                             break;
 
                             case 5:
-                            EarnMorePointsActivity.updatePoint(75,"Daily lucky wheel spin",user.getUid());
+                            EarnMorePointsActivity.updatePoint(25,"Daily lucky wheel spin",user.getUid(),SpinAndWinActivity.this,true);
                             break;
 
                             case 6:
-                            EarnMorePointsActivity.updatePoint(100,"Daily lucky wheel spin",user.getUid());
+                            EarnMorePointsActivity.updatePoint(30,"Daily lucky wheel spin",user.getUid(),SpinAndWinActivity.this,true);
                             break;
 
                             case 7:
-                            EarnMorePointsActivity.updatePoint(500,"Daily lucky wheel spin",user.getUid());
+                            EarnMorePointsActivity.updatePoint(20,"Daily lucky wheel spin",user.getUid(),SpinAndWinActivity.this,true);
                             break;
+
+
                     }
 
                 }
@@ -256,50 +276,73 @@ public class SpinAndWinActivity extends AppCompatActivity {
 
     private void mGenerateLuckyItems(List<LuckyItem> data) {
         LuckyItem luckyItem1 = new LuckyItem();
-        luckyItem1.topText = "10 Pts";
+        luckyItem1.topText = "05 Pts";
         luckyItem1.color = 0xffFFF3E0;
         data.add(luckyItem1);
 
         LuckyItem luckyItem2 = new LuckyItem();
-        luckyItem2.topText = "20 Pts";
+        luckyItem2.topText = "10 Pts";
         luckyItem2.color = 0xffFFE0B2;
         data.add(luckyItem2);
 
-        LuckyItem luckyItem3 = new LuckyItem();
-        luckyItem3.topText = "Spin again";
-        luckyItem3.color = 0xffFFCC80;
-        data.add(luckyItem3);
+        LuckyItem luckyItem9 = new LuckyItem();
+        luckyItem9.topText = "750 Pts";
+        luckyItem9.color = 0xffFFCC80;
+        data.add(luckyItem9);
 
         //////////////////
         LuckyItem luckyItem4 = new LuckyItem();
-        luckyItem4.topText = "25 Pts";
+        luckyItem4.topText = "15 Pts";
         luckyItem4.color = 0xffFFF3E0;
         data.add(luckyItem4);
 
-        LuckyItem luckyItem5 = new LuckyItem();
-        luckyItem5.topText = "50 Pts";
-        luckyItem5.color = 0xffFFE0B2;
-        data.add(luckyItem5);
+
+        LuckyItem luckyItem8 = new LuckyItem();
+        luckyItem8.topText = "500 Pts";
+        luckyItem8.color = 0xffFFE0B2;
+        data.add(luckyItem8);
+
+
 
         LuckyItem luckyItem6 = new LuckyItem();
-        luckyItem6.topText = "75 Pts";
+        luckyItem6.topText = "25 Pts";
         luckyItem6.color = 0xffFFCC80;
         data.add(luckyItem6);
         //////////////////
 
         //////////////////////
         LuckyItem luckyItem7 = new LuckyItem();
-        luckyItem7.topText = "100 Pts";
+        luckyItem7.topText = "30 Pts";
         luckyItem7.color = 0xffFFF3E0;
         data.add(luckyItem7);
 
-        LuckyItem luckyItem8 = new LuckyItem();
-        luckyItem8.topText = "500 Pts";
-        luckyItem8.color = 0xffFFE0B2;
-        data.add(luckyItem8);
+        LuckyItem luckyItem5 = new LuckyItem();
+        luckyItem5.topText = "20 Pts";
+        luckyItem5.color = 0xffFFE0B2;
+        data.add(luckyItem5);
+
+
+        LuckyItem luckyItem3 = new LuckyItem();
+        luckyItem3.topText = "Spin again";
+        luckyItem3.color = 0xffFFCC80;
+        data.add(luckyItem3);
+
+
     }
 
 
+
+
+    public int getRandomWithExclusion(Random rnd, int start, int end, int... exclude) {
+        int random = start + rnd.nextInt(end - start + 1 - exclude.length);
+        for (int ex : exclude) {
+            if (random < ex) {
+                break;
+            }
+            random++;
+        }
+        return random;
+    }
 
 
 

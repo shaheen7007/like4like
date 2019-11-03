@@ -29,7 +29,7 @@
         android:layout_below="@+id/adView">
     <co.ceryle.fitgridview.FitGridView
         android:id="@+id/gridView"
-        android:layout_margin="5dp"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:horizontalSpacing="5dp"

@@ -147,7 +147,7 @@ public class TransactionsActivity extends AppCompatActivity {
     private void mGetUserTransactions(String uid) {
 
         showProgressDialog();
-        TransactionsRef.getInstance(TransactionsActivity.this, uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        TransactionsRef.getInstance(TransactionsActivity.this, uid).limitToLast(100).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 list.clear();
