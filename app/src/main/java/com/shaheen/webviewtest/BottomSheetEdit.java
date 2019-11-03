@@ -1,6 +1,7 @@
 package com.shaheen.webviewtest;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -97,16 +99,16 @@ public class BottomSheetEdit extends BottomSheetDialogFragment implements View.O
 
 
         switch (prefManager.getPointPerLike()) {
-            case 10:
+            case 25:
                 selected_point=0;
                 break;
-            case 15:
+            case 30:
                 selected_point=1;
                 break;
-            case 20:
+            case 40:
                 selected_point=2;
                 break;
-            case 25:
+            case 60:
                 selected_point=3;
                 break;
         }
@@ -172,6 +174,8 @@ public class BottomSheetEdit extends BottomSheetDialogFragment implements View.O
 
 
         if (v == TXT_verify) {
+
+            hideKeyboardFrom(getActivity(),ET_FbID);
 
             if (TextUtils.isEmpty(ET_FbID.getText().toString())) {
                 Toast.makeText(getActivity(), "Please enter a valid FB id", Toast.LENGTH_SHORT).show();
@@ -247,16 +251,16 @@ public class BottomSheetEdit extends BottomSheetDialogFragment implements View.O
         fbPage.setUserID(user.getUid());
         switch (selected_point) {
             case 0:
-                fbPage.setPoints(10);
+                fbPage.setPoints(25);
                 break;
             case 1:
-                fbPage.setPoints(15);
+                fbPage.setPoints(30);
                 break;
             case 2:
-                fbPage.setPoints(20);
+                fbPage.setPoints(40);
                 break;
             case 3:
-                fbPage.setPoints(25);
+                fbPage.setPoints(60);
                 break;
         }
 
@@ -519,5 +523,8 @@ public class BottomSheetEdit extends BottomSheetDialogFragment implements View.O
         }
     }
 
-
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 }

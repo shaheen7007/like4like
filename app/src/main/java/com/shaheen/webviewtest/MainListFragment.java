@@ -1,5 +1,6 @@
 package com.shaheen.webviewtest;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 
@@ -60,7 +62,7 @@ public class MainListFragment extends Fragment {
     static Context context;
     static FragmentManager fragmentManager;
     static boolean dialogFlag = false;
-    int addOrEdit=Consts.ADD;
+    static int addOrEdit=Consts.ADD;
     AdView mAdView_banner;
     private static InterstitialAd mInterstitialAd;
     private static SwipeRefreshLayout swipeRefreshLayout;
@@ -87,7 +89,12 @@ public class MainListFragment extends Fragment {
     }
 
     static void getUserLikedPages() {
+
         progressBar.show();
+
+        setVisibilityOfButton();
+
+
         userLikedPages = new ArrayList<>();
         UserLikedPagesRef.getInstance(context, user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -107,9 +114,9 @@ public class MainListFragment extends Fragment {
 
 
 
-    private void setVisibilityOfButton() {
+    private static void setVisibilityOfButton() {
 
-        UsersRef.getUserByUserId(getActivity(),user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        UsersRef.getUserByUserId(context,user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserProfile userProfile = dataSnapshot.getValue(UserProfile.class);
@@ -244,6 +251,7 @@ return true;
                         bottomSheetAdd.show(getActivity().getSupportFragmentManager(),
                                 "add page");
                     }
+
                 }
             }
         });
@@ -319,7 +327,7 @@ return true;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     FbPage fbPage = snapshot.getValue(FbPage.class);
 
-                    if (!userLikedPages.contains(fbPage.getPageID()) && !(fbPage.getUserTotalPoints() < fbPage.getPoints())) {
+                    if (!userLikedPages.contains(fbPage.getPageID()) && !(fbPage.getUserTotalPoints() < fbPage.getPoints()) && fbPage.getPoints()!=0) {
                         fbPageList.add(fbPage);
                     }
                     if (fbPageList.size()==40){
@@ -396,6 +404,7 @@ return true;
 
 
     }
+
 
 
 }

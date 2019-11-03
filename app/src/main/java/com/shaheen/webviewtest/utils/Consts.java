@@ -8,7 +8,7 @@ public interface Consts {
     int THIS_USER=1;
     int THAT_USER=2;
     String PAGES = "pages";
-    String F_USER_TOTAL_POINTS = "UserTotalPoints";
+    String F_USER_TOTAL_POINTS = "userTotalPoints";
     String POINTS = "points";
     String F_LISTED_PAGE = "listedPage";
     String TRANSACTIONS = "transactions";

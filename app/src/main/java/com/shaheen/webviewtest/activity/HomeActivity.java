@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity {
     private ActionBarDrawerToggle t;
     private NavigationView nv;
     static ImageView BTN_Nav;
-    PrefManager prefManager;
+    static PrefManager prefManager;
     static Toolbar toolbar;
     private InterstitialAd mInterstitialAd;
 
@@ -240,7 +240,7 @@ public class HomeActivity extends AppCompatActivity {
 
         AppRate.with(this)
                 .setInstallDays(0) // default 10, 0 means install day.
-                .setLaunchTimes(2) // default 10
+                .setLaunchTimes(3) // default 10
                 .setRemindInterval(1) // default 1
                 .setTitle("Get 50 Points Now!")
                 .setMessage("Give 5 stars rating and get 50 reward points")
@@ -423,6 +423,10 @@ public class HomeActivity extends AppCompatActivity {
 
         if (userType == Consts.THAT_USER) {
             PagesRef.getPageByPageId(context, pageID).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
+        }
+        else {
+            PagesRef.getPageByPageId(context,prefManager.getLitedPageId()).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
+
         }
 
     }

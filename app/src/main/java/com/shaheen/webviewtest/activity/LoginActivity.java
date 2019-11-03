@@ -78,13 +78,13 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+      //  FirebaseUser currentUser = mAuth.getCurrentUser();
         prefManager = PrefManager.getInstance(this);
 
 
-        if (currentUser != null && !prefManager.getIsFirsttime()) {
+      /*  if (currentUser != null && !prefManager.getIsFirsttime()) {
             mMoveToHomePage();
-        }
+        }*/
 
 
         //change ad unit id in layout

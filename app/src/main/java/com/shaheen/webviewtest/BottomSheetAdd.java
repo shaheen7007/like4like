@@ -1,6 +1,7 @@
 package com.shaheen.webviewtest;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -158,6 +160,8 @@ public class BottomSheetAdd extends BottomSheetDialogFragment implements View.On
 
         if (v == TXT_verify) {
 
+            hideKeyboardFrom(getActivity(),ET_FbID);
+
             if (TextUtils.isEmpty(ET_FbID.getText().toString())) {
                 Toast.makeText(getActivity(), "Please enter a valid FB id", Toast.LENGTH_SHORT).show();
             } else {
@@ -231,16 +235,16 @@ public class BottomSheetAdd extends BottomSheetDialogFragment implements View.On
         fbPage.setUserID(user.getUid());
         switch (selected_point) {
             case 0:
-                fbPage.setPoints(10);
+                fbPage.setPoints(25);
                 break;
             case 1:
-                fbPage.setPoints(15);
+                fbPage.setPoints(30);
                 break;
             case 2:
-                fbPage.setPoints(20);
+                fbPage.setPoints(40);
                 break;
             case 3:
-                fbPage.setPoints(25);
+                fbPage.setPoints(60);
                 break;
         }
 
@@ -260,6 +264,7 @@ public class BottomSheetAdd extends BottomSheetDialogFragment implements View.On
 
                         //update userref- listedpageid
                         UsersRef.getUserByUserId(getActivity(),user.getUid()).child(Consts.F_LISTED_PAGE).setValue(fbPage.getPageID());
+                        UsersRef.getUserByUserId(getActivity(),user.getUid()).child(Consts.F_POINTS_PER_LIKE).setValue(fbPage.getPoints());
                         prefManager.setIsPageListed(true);
                         prefManager.setListedPageId(fbPage.getPageID());
                         prefManager.setPointPerLike(fbPage.getPoints());
@@ -492,6 +497,13 @@ public class BottomSheetAdd extends BottomSheetDialogFragment implements View.On
         if (dialog != null) {
             dialog.dismiss();
         }
+
+
+    }
+
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
