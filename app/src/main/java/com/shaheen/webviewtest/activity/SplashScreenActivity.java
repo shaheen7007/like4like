@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,19 +21,36 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
 
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
-        mAuth = FirebaseAuth.getInstance();
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        prefManager = PrefManager.getInstance(this);
+                prefManager = PrefManager.getInstance(SplashScreenActivity.this);
 
 
-        if (currentUser != null && !prefManager.getIsFirsttime()) {
-            mMoveToHomePage();
-        }
-        else {
-            mMoveToLoginPage();
-        }
+                if (!prefManager.getIsLoggedIn()) {
+                    mAuth = FirebaseAuth.getInstance();
+
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
+
+                    if (currentUser != null && !prefManager.getIsFirsttime()) {
+                        prefManager.setIsLoggedIn(true);
+                        mMoveToHomePage();
+                    } else {
+                        prefManager.setIsLoggedIn(false);
+                        mMoveToLoginPage();
+                    }
+                }
+                else{
+
+                    mMoveToHomePage();
+
+                }
+
+
+            }
+        }, 500);
 
     }
 

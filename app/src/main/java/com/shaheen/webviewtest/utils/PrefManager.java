@@ -17,6 +17,7 @@ public class PrefManager {
     private static final String LAST_SPIN_TIME = "last_spin_time";
     private static final String IS_PAGE_LISTED = "is_page_listed";
     private static final String IS_FIRST_TIME = "is_first_time";
+    private static final String IS_LOGGED_IN = "is_logged_in";
     private static final String POINT_PER_LIKE = "points_per_like";
     private static final String COUNT_FOR_AD = "count_for_ad";
     private static final String DEVICE_TOKEN = "device_token";
@@ -118,6 +119,15 @@ public class PrefManager {
 
     public void setIsFirstTime(boolean status){
         putBoolean(IS_FIRST_TIME,status);
+    }
+
+
+    public boolean getIsLoggedIn(){
+        return prefs.getBoolean(IS_LOGGED_IN, false);
+    }
+
+    public void setIsLoggedIn(boolean status){
+        putBoolean(IS_LOGGED_IN,status);
     }
 
     public String getLitedPageId(){
