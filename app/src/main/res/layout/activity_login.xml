@@ -17,10 +17,11 @@
 
         <ImageView
             android:layout_width="110dp"
+            android:background="@color/colorPrimaryDark"
             android:layout_height="110dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/like4like_icon" />
+            android:src="@drawable/logo2" />
 
         <!-- Email Label -->
         <com.google.android.material.textfield.TextInputLayout

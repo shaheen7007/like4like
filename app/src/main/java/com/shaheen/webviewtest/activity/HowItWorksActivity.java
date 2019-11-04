@@ -1,5 +1,6 @@
 package com.shaheen.webviewtest.activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Handler;
 import androidx.annotation.NonNull;
@@ -7,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import dmax.dialog.SpotsDialog;
+
 import android.view.View;
 import android.widget.ImageView;
 
@@ -35,7 +38,7 @@ public class HowItWorksActivity extends AppCompatActivity {
   //  List<FAQ> list;
     Runnable r;
   //  FaqAdapter faqAdapter;
-    ProgressDialog dialog;
+    AlertDialog dialog;
     ImageView BTN_back;
     AdView mAdView_banner;
     private InterstitialAd mInterstitialAd;
@@ -100,7 +103,7 @@ public class HowItWorksActivity extends AppCompatActivity {
         });
 
 
-        dialog = new ProgressDialog(this);
+        dialog = new SpotsDialog(this);
 
        /* list = new ArrayList<>();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);

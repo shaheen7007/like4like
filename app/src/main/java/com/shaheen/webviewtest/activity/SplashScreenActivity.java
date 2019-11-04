@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.shaheen.webviewtest.R;
 import com.shaheen.webviewtest.utils.PrefManager;
 
+import java.util.Objects;
+
 public class SplashScreenActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -47,6 +49,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                     mMoveToHomePage();
 
                 }
+
+
 
 
             }

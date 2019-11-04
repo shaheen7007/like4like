@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -400,6 +401,14 @@ public class HomeActivity extends AppCompatActivity {
                     animatePointsText();
                     TV_points.setText(currentPoints + " Pts");
 
+                    if (currentPoints<userProfile.getPointsPerLike()){
+                        TV_points.setTextColor(Color.parseColor("#ff0000"));
+                    }
+                    else {
+                        TV_points.setTextColor(Color.parseColor("#ffffff"));
+
+                    }
+
 
                     //   }
 
@@ -425,8 +434,10 @@ public class HomeActivity extends AppCompatActivity {
             PagesRef.getPageByPageId(context, pageID).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
         }
         else {
-            PagesRef.getPageByPageId(context,prefManager.getLitedPageId()).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
 
+            if (prefManager.getLitedPageId()!=null) {
+                PagesRef.getPageByPageId(context, prefManager.getLitedPageId()).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
+            }
         }
 
     }

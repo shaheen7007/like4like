@@ -3,6 +3,7 @@ package com.shaheen.webviewtest.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.shaheen.webviewtest.R;
+import com.shaheen.webviewtest.databaseRef.PagesRef;
 import com.shaheen.webviewtest.databaseRef.TransactionsRef;
 import com.shaheen.webviewtest.databaseRef.UsersRef;
 import com.shaheen.webviewtest.model.Transaction;
@@ -44,7 +46,7 @@ public class EarnMorePointsActivity extends AppCompatActivity {
     FirebaseUser user;
     static String userID = null;
     static ImageView BTN_Nav;
-    PrefManager prefManager;
+    static PrefManager prefManager;
     Button BTN_watchVideo;
     Button BTN_spin;
     private RewardedAd rewardedAd;
@@ -339,6 +341,14 @@ public class EarnMorePointsActivity extends AppCompatActivity {
                     if (animate) {
                         animatePointsText(c);
                         TV_points.setText(currentPoints + " Pts");
+
+                        if (currentPoints<userProfile.getPointsPerLike()){
+                            TV_points.setTextColor(Color.parseColor("#ff0000"));
+                        }
+                        else {
+                            TV_points.setTextColor(Color.parseColor("#ffffff"));
+
+                        }
                     }
 
                     //   }
@@ -359,6 +369,9 @@ public class EarnMorePointsActivity extends AppCompatActivity {
     private static void mUpdatePointsInFirebase(String userID, int newPoints, Context c, boolean animate) {
 
         UsersRef.getUserByUserId(c, userID).getRef().child(Consts.F_TOTAL_POINTS).setValue(newPoints);
+        if (prefManager.getLitedPageId()!=null) {
+            PagesRef.getPageByPageId(context, prefManager.getLitedPageId()).child(Consts.F_USER_TOTAL_POINTS).setValue(newPoints);
+        }
 
         getCurrentPointsAndSetInTextView(userID,c,animate);
 

@@ -43,5 +43,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:18.2.0'
     implementation 'com.android.support:multidex:1.0.3'
     implementation project(path: ':luckywheel')
+    implementation  'com.github.d-max:spots-dialog:0.7@aar'
+
 
 }

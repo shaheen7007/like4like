@@ -11,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import dmax.dialog.SpotsDialog;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -53,7 +55,7 @@ public class BottomSheetEdit extends BottomSheetDialogFragment implements View.O
     EditText ET_FbID, ET_points;
     View view;
     PrefManager prefManager;
-    private ProgressDialog dialog = null;
+    private AlertDialog dialog = null;
     private boolean isVerified = false;
     private boolean isPointSet= false;
     private int selected_point = 0;
@@ -82,7 +84,7 @@ public class BottomSheetEdit extends BottomSheetDialogFragment implements View.O
         TXT_verify.setOnClickListener(this);
         ET_points.setOnClickListener(this);
 
-        dialog = new ProgressDialog(getActivity());
+        dialog = new SpotsDialog(getActivity());
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 

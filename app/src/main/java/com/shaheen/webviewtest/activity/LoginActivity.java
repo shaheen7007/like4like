@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import dmax.dialog.SpotsDialog;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView _signupLink;
     private FirebaseAuth mAuth;
     private PrefManager prefManager;
-    ProgressDialog progressDialog;
+    AlertDialog progressDialog;
     AdView mAdView_banner;
 
     @Override
@@ -118,9 +120,9 @@ public class LoginActivity extends AppCompatActivity {
 
         //_loginButton.setEnabled(false);
 
-        progressDialog = new ProgressDialog(LoginActivity.this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog = new SpotsDialog(LoginActivity.this,"Authenticating");
+        progressDialog.setCancelable(false);
+   //     progressDialog.setMessage("Authenticating");
         progressDialog.show();
 
         String email = _emailText.getText().toString().trim();
@@ -276,7 +278,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Facebook login session required:");
-        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like login in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE\n\n* If you face any trouble while login, click on 'having trouble?' button");
+        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like login in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE app\n\n* If you face any trouble while login, click on 'having trouble?' button");
 
         alert.setCancelable(false);
         alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {

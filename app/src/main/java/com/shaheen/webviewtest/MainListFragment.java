@@ -1,6 +1,7 @@
 package com.shaheen.webviewtest;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -44,6 +45,7 @@ import java.util.List;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import co.ceryle.fitgridview.FitGridView;
+import dmax.dialog.SpotsDialog;
 
 
 public class MainListFragment extends Fragment {
@@ -55,7 +57,7 @@ public class MainListFragment extends Fragment {
     static ArrayList<String> userLikedPages;
     static FragmentTransaction ft;
     static FirebaseUser user;
-    static ProgressDialog progressBar;
+    static AlertDialog progressBar;
     static Button BTN_listMyPage;
     BottomSheetAdd bottomSheetAdd;
     BottomSheetEdit bottomSheetEdit;
@@ -231,8 +233,8 @@ return true;
         user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-        progressBar = new ProgressDialog(getActivity());
-        progressBar.setMessage("Loading");
+        progressBar = new SpotsDialog(getActivity(),"Loading");
+       // progressBar.setMessage("Loading");
         progressBar.setCancelable(false);
 
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WebviewTest</string>
+    <string name="app_name">Like4Like</string>
     <string name="Open">open</string>
     <string name="Close">close</string>
     <string-array name="default_empty_list" />

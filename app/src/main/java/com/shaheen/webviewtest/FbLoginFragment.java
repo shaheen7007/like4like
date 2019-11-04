@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import dmax.dialog.SpotsDialog;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +41,7 @@ public class FbLoginFragment extends Fragment {
     String fanid;
     boolean flag = false;
     int count = 0;
-    ProgressDialog progressBar;
+    AlertDialog progressBar;
     Button BTN_close;
     FbPage fbPage;
     FirebaseUser user;
@@ -68,8 +70,8 @@ public class FbLoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fblogin, container, false);
 
 
-        progressBar = new ProgressDialog(getActivity());
-        progressBar.setMessage("Please wait..");
+        progressBar = new SpotsDialog(getActivity(),"Please wait");
+      //  progressBar.setMessage("Please wait..");
         progressBar.setCancelable(false);
 
 

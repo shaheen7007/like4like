@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import dmax.dialog.SpotsDialog;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +24,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.shaheen.webviewtest.R;
+import com.shaheen.webviewtest.databaseRef.TransactionsRef;
 import com.shaheen.webviewtest.databaseRef.UsersRef;
+import com.shaheen.webviewtest.model.Transaction;
 import com.shaheen.webviewtest.model.UserProfile;
+import com.shaheen.webviewtest.utils.Consts;
 import com.shaheen.webviewtest.utils.PrefManager;
 import com.shaheen.webviewtest.utils.Utils;
 
@@ -99,9 +104,9 @@ public class SignupActivity extends AppCompatActivity {
 
         _signupButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
+        final AlertDialog progressDialog = new SpotsDialog(SignupActivity.this,"Creating Account");
+        progressDialog.setCancelable(false);
+       // progressDialog.setMessage("Creating Account");
         progressDialog.show();
 
         final String name = _nameText.getText().toString();
@@ -196,11 +201,20 @@ public class SignupActivity extends AppCompatActivity {
         UserProfile profile = new UserProfile();
         profile.setUserID(user.getUid());
         profile.setUserEmail(user.getEmail());
-        profile.setTotalPoints(0);
+        profile.setTotalPoints(50);
         profile.setUserName(name);
         profile.setDeviceToken(prefManager.getDeviceToken());
 
         UsersRef.getInstance(SignupActivity.this).getRef().child(profile.getUserID()).setValue(profile);
+
+        Transaction transaction=new Transaction();
+        transaction.setBalance(50);
+        transaction.setDate(Utils.DateMonthyear(System.currentTimeMillis()));
+        transaction.setMsg("SignUp Bonus");
+        transaction.setPlusOrMinus(Consts.PLUS);
+        transaction.setPoints(50);
+        transaction.setType(Consts.TRANSACTION_BONUS);
+        TransactionsRef.getInstance(SignupActivity.this,user.getUid()).push().setValue(transaction);
 
         Toast.makeText(SignupActivity.this, "SignUp successful", Toast.LENGTH_SHORT).show();
     }
@@ -210,7 +224,7 @@ public class SignupActivity extends AppCompatActivity {
 
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Facebook login session required:");
-        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like login in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE\n\n* If you face any trouble while login, click on 'having trouble?' button");
+        alert.setMessage("* Facebook login session is required for the working of this app.\n\n* So on the next page, you have to login into Facebook to continue. \n\n* Don't worry it's just like login in a browser. Your credentials are 100% safe.\n\n*After logging in, you will be redirected to LIKE4LIKE app\n\n* If you face any trouble while login, click on 'having trouble?' button");
 
         alert.setCancelable(false);
         alert.setNegativeButton("Ok", new DialogInterface.OnClickListener() {

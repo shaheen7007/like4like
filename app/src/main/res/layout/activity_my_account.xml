@@ -87,7 +87,7 @@
         android:textSize="30sp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
-        android:text="shaheen_bsv"
+        android:text=""
         android:layout_height="wrap_content" />
 
 
@@ -111,7 +111,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:text="25"
+            android:text=""
             android:textColor="#000"
             android:textStyle="bold"
             android:id="@+id/points"
@@ -155,13 +155,13 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:text="1"
-            android:textColor="#000"
-            android:textStyle="bold"
             android:id="@+id/rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#000"
             android:textSize="40sp"
-            android:layout_height="wrap_content" />
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -214,7 +214,7 @@
             >
         <TextView
             android:layout_width="match_parent"
-            android:text="1"
+            android:text=""
             android:textColor="#000"
             android:textAlignment="center"
             android:textStyle="bold"
@@ -241,7 +241,7 @@
             >
             <TextView
                 android:layout_width="match_parent"
-                android:text="1"
+                android:text=""
                 android:textColor="#000"
                 android:textAlignment="center"
                 android:textStyle="bold"

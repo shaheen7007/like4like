@@ -14,6 +14,8 @@ public interface Consts {
     String TRANSACTIONS = "transactions";
     int TRANSACTION_I_LIKE = 1;
     int TRANSACTION_U_LIKE = 2;
+    int TRANSACTION_AD_WATCH = 3;
+    int TRANSACTION_BONUS = 4;
     int PLUS =1 ;
     int MINUS =0 ;
     String F_POINTS_PER_LIKE = "pointsPerLike";
@@ -22,6 +24,5 @@ public interface Consts {
     String FAQ = "faq";
     int DRAWER = 1;
     int BACK = 2;
-    int TRANSACTION_AD_WATCH = 3;
     String F_DEVICE_TOKEN = "deviceToken";
 }
