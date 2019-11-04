@@ -66,7 +66,7 @@
         android:layout_below="@+id/tb"
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        ads:adUnitId="ca-app-pub-2416033626083993/1755228749">
     </com.google.android.gms.ads.AdView>
 
 
@@ -78,7 +78,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        ads:adUnitId="ca-app-pub-2416033626083993/2203280299">
     </com.google.android.gms.ads.AdView>
 
 
